@@ -8,11 +8,13 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-import java.io.*;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Objects;
+
+import static com.yuluo.auto.constants.Constant.*;
 
 /**
  * @Description 加载文件模板资源
@@ -21,6 +23,12 @@ import java.util.Objects;
  * @Version V1.0
  */
 public class FileResource {
+
+    private Resource resource;
+
+    public FileResource(Resource resource) {
+        this.resource = resource;
+    }
 
     /**
      * 加载模板信息
@@ -31,86 +39,92 @@ public class FileResource {
         doProcess(table, file, config);
     }
 
+    /**
+     * 流程处理
+     *
+     * @param table
+     * @param file
+     * @param config
+     */
     private void doProcess(Table table, File file, Configuration config) {
-        Assert.notNull(file, "file is require not null !");
-        for (File f : file.listFiles()) {
-            if (f.getName().startsWith("Annotion")) {
-                continue;
+        try {
+            for (File f : Objects.requireNonNull(file.listFiles())) {
+                createFile(table, config, f);
             }
-            // 第四步：加载一个模板，创建一个模板对象。
-            Template template = null;
-            Writer out = null;
-            try {
-                String fileName = f.getName();
-                template = config.getTemplate(fileName);
-                System.out.println("-----------> 加载模板" + fileName);
-                String name = getFilePath(table, fileName);
-                out = new FileWriter(name);
-                // 第七步：调用模板对象的process方法输出文件。
-                //向数据集中添加数据
-                template.process(table, out);
-                System.out.println("-----------> 生成文件 ：" + name);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                // 第八步：关闭流。
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
+        } catch (TemplateException | IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private String getFilePath(Table table, String fileName) {
-        String name = "D:/autocode/";
-        String prefix = fileName.substring(0, fileName.indexOf("."));
+    /**
+     * 根据模板创建文件
+     *
+     * @param table
+     * @param config
+     * @param f
+     * @throws IOException
+     * @throws TemplateException
+     */
+    private void createFile(Table table, Configuration config, File f) throws IOException, TemplateException {
+        String name = f.getName();
+        Template template = config.getTemplate(name);
+        System.out.println("-----------> 加载模板" + name);
+        name = getFilePath(table.getUpperCaseName(), name);
+        try (Writer out = new FileWriter(name)) {
+            template.process(table, out);
+        }
+        System.out.println("-----------> 生成文件 ：" + name);
+    }
 
-        if (prefix.toLowerCase().contains("controller")) {
-            name += "controller/";
+    /**
+     * 获取文件路径
+     * @param content
+     * @param fileName
+     * @return
+     */
+    private String getFilePath(String content, String fileName) {
+        StringBuilder sb = handlePath(resource.getFirstProperty(PATH) , fileName);
+        mkdirs(sb);
+        String prefix = fileName.substring(0, fileName.indexOf("."));
+        if (prefix.toLowerCase().contains(MAPPER)) {
+            sb.append(content);
+        } else {
+            sb.append(content).append(fileName, 0, fileName.indexOf("."));
         }
-        if (prefix.toLowerCase().contains("service")) {
-            name += "service/";
+        if (fileName.contains("Mapper")) {
+            sb.append(".xml");
+        } else {
+            sb.append(".java");
         }
-        if (prefix.toLowerCase().contains("impl")) {
-            name += "impl/";
+        return sb.toString();
+    }
+
+    /**
+     * 处理文件路径
+     * @param basePath
+     * @return
+     */
+    private StringBuilder handlePath(String basePath , String fileName) {
+        StringBuilder sb = new StringBuilder(basePath);
+        if (basePath.contains("/")) {
+            basePath = basePath.replaceAll("/", File.separator);
         }
-        if (prefix.toLowerCase().contains("dao")) {
-            name += "dao/";
+        if (!basePath.endsWith(File.separator)) {
+            sb.append(File.separator);
         }
-        if (prefix.toLowerCase().contains("io") || prefix.toLowerCase().contains("vo")) {
-            name += "controller/vo/";
-        }
-        if (prefix.toLowerCase().contains("mapper")) {
-            name += "mapper/";
-        }
-        if (prefix.toLowerCase().contains("model")) {
-            name += "model/";
-        }
-        File file = new File(name);
+        sb.append(FILE_MAPPING.get(fileName)).append(File.separator);
+        return sb ;
+    }
+
+    /**
+     * 文件夹不存在则创建
+     * @param sb
+     */
+    private void mkdirs(StringBuilder sb) {
+        File file = new File(sb.toString());
         if (!file.exists()) {
             file.mkdirs();
         }
-        if (prefix.toLowerCase().contains("model")) {
-            name += table.getUpperCaseName();
-        } else {
-            name += table.getUpperCaseName() + fileName.substring(0, fileName.indexOf("."));
-        }
-
-        if (fileName.contains("Mapper")) {
-            name += ".xml";
-        } else {
-            name += ".java";
-        }
-        return name;
-    }
-
-    public static void main(String[] args) {
-        Table table = new Table("User", "用户表");
-        new FileResource().loadTemplate(table);
     }
 
 }

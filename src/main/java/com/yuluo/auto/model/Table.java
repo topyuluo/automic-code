@@ -35,20 +35,36 @@ public class Table {
 
     private List<Column> columns;
 
-    public Table(String tableName, String comment) {
-        this.tableName = tableName.toLowerCase();
+//    public Table(String tableName, String comment) {
+//        this.tableName = tableName.toLowerCase();
+//        this.upperCaseName = StringUtils.getFirstUpperCaseName(this.tableName);
+//        this.lowerCaseName = StringUtils.getFirstLowerCaseName(this.upperCaseName);
+//        this.comment = comment;
+//    }
+
+    public Table(TableBuilder builder) {
+        this.tableName = builder.tableName;
         this.upperCaseName = StringUtils.getFirstUpperCaseName(this.tableName);
         this.lowerCaseName = StringUtils.getFirstLowerCaseName(this.upperCaseName);
-        this.comment = comment;
+        this.comment = builder.comment;
+        this.idType = builder.idType;
+        this.autoIncrement = builder.autoIncrement;
+        this.isPrefix = builder.isPrefix;
+        this.autoIncrement = builder.autoIncrement;
+        this.basePackage = builder.basePackage;
+        this.daoPackage = builder.daoPackage;
+        this.columns = builder.columns;
     }
 
 
     public String getAutoIncrement() {
         return autoIncrement;
     }
+
     public void setAutoIncrement(String autoIncrement) {
         this.autoIncrement = autoIncrement;
     }
+
     public String getTableName() {
         return tableName;
     }
@@ -119,5 +135,74 @@ public class Table {
 
     public void setDaoPackage(String daoPackage) {
         this.daoPackage = daoPackage;
+    }
+
+    public static TableBuilder newBuilder() {
+        return new TableBuilder();
+    }
+
+    public static class TableBuilder {
+        //数据库中表名
+        private String tableName;
+        //表名注释
+        private String comment;
+        //主键类型
+        private String idType;
+
+        //id是否自动递增
+        private String autoIncrement;
+        /*是否截取前缀*/
+        private boolean isPrefix = false;
+        /*base package*/
+        private String basePackage;
+
+        /*dao的配置路径*/
+        private String daoPackage;
+
+        private List<Column> columns;
+
+        public TableBuilder tableName(String tableName) {
+            this.tableName = tableName;
+            return this;
+        }
+
+        public TableBuilder comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public TableBuilder idType(String idType) {
+            this.idType = idType;
+            return this;
+        }
+
+        public TableBuilder autoIncrement(String autoIncrement) {
+            this.autoIncrement = autoIncrement;
+            return this;
+        }
+
+        public TableBuilder prefix(boolean prefix) {
+            isPrefix = prefix;
+            return this;
+        }
+
+        public TableBuilder basePackage(String basePackage) {
+            this.basePackage = basePackage;
+            return this;
+        }
+
+        public TableBuilder daoPackage(String daoPackage) {
+            this.daoPackage = daoPackage;
+            return this;
+        }
+
+        public TableBuilder columns(List<Column> columns) {
+            this.columns = columns;
+            return this;
+        }
+
+        public Table build() {
+            return new Table(this);
+        }
     }
 }

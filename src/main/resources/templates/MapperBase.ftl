@@ -2,8 +2,8 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="<#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.dao.${upperCaseName}Dao">
-    <resultMap id="${lowerCaseName}Map" type="<#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.model.${upperCaseName}">
+<mapper namespace="<#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.dao.${upperCaseName}Dao">
+    <resultMap id="${lowerCaseName}Map" type="<#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName}">
     <#list columns as property>
         <#if property.lowerCaseName == "id">
         <id property="id" column="id"/>

@@ -1,5 +1,7 @@
 package com.yuluo.auto.source;
 
+import com.yuluo.auto.util.Assert;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class Resource {
      */
     public void load() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         InputStream in = null;
         try {
             for (int i = 0; i < resources.length; i++) {
@@ -52,5 +55,25 @@ public class Resource {
      */
     public Properties getResource(int index) {
         return list.get(index);
+    }
+
+    /**
+     * 获取第二个文件资源中的属性
+     * @param key
+     * @return
+     */
+    public String getSecondProperty(String key) {
+        Assert.notEmpty(key, "property is null !");
+        return list.get(1).getProperty(key);
+    }
+
+    /**
+     * 获取第一个文件资源中的属性
+     * @param key
+     * @return
+     */
+    public String getFirstProperty(String key){
+        Assert.notEmpty(key, "property is null ");
+        return list.get(0).getProperty(key);
     }
 }

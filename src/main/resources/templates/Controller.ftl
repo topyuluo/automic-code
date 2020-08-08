@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.model.${upperCaseName};
+import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName};
 import ${basePackage}.service.${upperCaseName}Service;
 
 

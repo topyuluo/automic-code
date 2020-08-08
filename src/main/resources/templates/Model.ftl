@@ -1,4 +1,4 @@
-package ${basePackage}.model;
+package ${basePackage}.orm.model;
 
 /**
  * ${comment}实体类.

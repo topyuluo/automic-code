@@ -1,6 +1,5 @@
 package com.yuluo.auto.model;
 
-import com.yuluo.auto.source.Resource;
 import com.yuluo.auto.util.StringUtils;
 
 import java.sql.ResultSet;

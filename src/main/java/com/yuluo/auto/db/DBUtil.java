@@ -38,7 +38,7 @@ public class DBUtil {
      */
     public void process() {
         List<Table> tables = new DBAction(resource).getAllTables();
-        FileResource fileResource = new FileResource();
+        FileResource fileResource = new FileResource(resource);
         tables.forEach(t -> fileResource.loadTemplate(t));
     }
 

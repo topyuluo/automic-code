@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import ${basePackage}.service.${upperCaseName}Service;
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.dao.${upperCaseName}Dao;
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.model.${upperCaseName};
+import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.dao.${upperCaseName}Dao;
+import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName};
 /**
  * ${comment}服务类.
  */

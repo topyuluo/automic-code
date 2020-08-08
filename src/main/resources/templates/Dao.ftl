@@ -1,10 +1,10 @@
-package <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.dao;
+package <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.model.${upperCaseName};
+import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName};
 
 /**
  * ${comment}数据访问类.

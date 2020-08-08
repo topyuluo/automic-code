@@ -1,5 +1,6 @@
 package com.yuluo.auto.action;
 
+import com.yuluo.auto.constants.Constant;
 import com.yuluo.auto.db.DBFactory;
 import com.yuluo.auto.model.Column;
 import com.yuluo.auto.model.Table;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static com.yuluo.auto.constants.Constant.*;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -63,7 +65,7 @@ public class DBAction {
      * @return
      */
     private String getDatabase(Resource resource) {
-        String url = resource.getResource(0).getProperty("db.url");
+        String url = resource.getResource(0).getProperty(Constant.DB_URL);
         int start = url.lastIndexOf("/");
         int end = 0;
         if (url.contains("?")) {
@@ -79,18 +81,24 @@ public class DBAction {
         if (rs == null) {
             return null;
         }
-        String tableName = rs.getString("TABLE_NAME");
-        String comment = rs.getString("Remarks");
-        Table table = new Table(tableName, comment);
+        String tableName = rs.getString(TABLE_NAME);
+        String comment = rs.getString(REMARKS);
+
         List<Column> columns = getAllColumns(tableName, metaData, resource.getResource(1));
-        table.setColumns(columns);
-        table.setIdType(getIdType(columns, tableName, metaData));
-        table.setAutoIncrement(getInCrement(columns));
-        table.setBasePackage(resource.getResource(0).getProperty("base.package"));
-        table.setDaoPackage(resource.getResource(0).getProperty("dao.package"));
+
+        Table table = Table.newBuilder()
+                .tableName(tableName)
+                .comment(comment)
+                .idType(getIdType(columns, tableName, metaData))
+                .autoIncrement(getInCrement(columns))
+                .basePackage(resource.getFirstProperty(BASE_PACKAGE))
+                .daoPackage(resource.getFirstProperty(DAO_PACKAGE))
+                .columns(columns)
+                .build();
         System.out.println("-----------> 加载表 ：" + tableName + " <-----------------");
         return table;
     }
+
 
     private String getInCrement(List<Column> columns) {
         List<String> ids = columns.stream()
