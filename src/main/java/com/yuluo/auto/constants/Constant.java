@@ -1,6 +1,5 @@
 package com.yuluo.auto.constants;
 
-import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -27,6 +26,8 @@ public interface Constant {
     String MAPPER = "model";
 
     String UNDER_LINE = "_";
+
+    String[] TEMPLATES_FILE = {"Controller.ftl", "Dao.ftl", "Mapper.ftl", "MapperBase.ftl", "Model.ftl", "Service.ftl", "ServiceImpl.ftl"};
 
     HashMap<String, String> FILE_MAPPING = new HashMap<String, String>() {{
         put("Controller.ftl", "controller");

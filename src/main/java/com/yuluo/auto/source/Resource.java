@@ -94,6 +94,7 @@ public class Resource {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            log.error(e.getMessage());
         } finally {
             if (in != null) {
                 try {

@@ -16,9 +16,5 @@ public class ResourceTest {
 
     @Test
     public void getResource() {
-        Resource resource = new Resource();
-        resource.load();
-        Properties resource1 = resource.getResource(0);
-        Assert.assertEquals("zhangsan" , resource1.getProperty("name") );
     }
 }

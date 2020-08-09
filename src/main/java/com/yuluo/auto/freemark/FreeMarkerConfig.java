@@ -5,8 +5,6 @@ import freemarker.template.Configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 /**
  * @Description freemark 解析模板类

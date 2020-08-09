@@ -7,10 +7,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Objects;
 
 import static com.yuluo.auto.constants.Constant.*;
@@ -69,8 +66,8 @@ public class FileResource {
         Template template = config.getTemplate(name);
         log.info("load template- " + name.substring(0 ,name.indexOf(".")));
         name = getFilePath(table.getUpperCaseName(), name);
-        try (Writer out = new FileWriter(name)) {
-            template.process(table, out);
+        try (BufferedWriter writer = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (name,true),"UTF-8"));) {
+            template.process(table, writer);
         }
         log.info("create file- " + name);
     }
