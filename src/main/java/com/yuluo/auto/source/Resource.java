@@ -1,6 +1,7 @@
 package com.yuluo.auto.source;
 
 import com.yuluo.auto.util.Assert;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,8 @@ import java.util.Properties;
  * @Version V1.0
  */
 public class Resource {
+
+    private static Logger log = Logger.getLogger(Resource.class);
 
     private final String[] resources = new String[]{"application.properties", "type_mapping.properties"};
     private List<Properties> list = new ArrayList<>(resources.length);
@@ -32,11 +35,11 @@ public class Resource {
                 Properties propert = new Properties();
                 propert.load(in);
                 list.add(propert);
-                System.out.println("-----------> 加载： "+ resources[i]);
+                log.info("load resource-" + resources[i]);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("-----> 文件加载异常 <------");
+            log.error(e.getMessage());
         } finally {
             if (in != null) {
                 try {
@@ -59,20 +62,22 @@ public class Resource {
 
     /**
      * 获取第二个文件资源中的属性
+     *
      * @param key
      * @return
      */
-    public String getSecondProperty(String key) {
+    public String getTypeMappingProperty(String key) {
         Assert.notEmpty(key, "property is null !");
         return list.get(1).getProperty(key);
     }
 
     /**
      * 获取第一个文件资源中的属性
+     *
      * @param key
      * @return
      */
-    public String getFirstProperty(String key){
+    public String getApplictionProperty(String key) {
         Assert.notEmpty(key, "property is null ");
         return list.get(0).getProperty(key);
     }

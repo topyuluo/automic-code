@@ -15,10 +15,12 @@ import java.net.URL;
  * @Version V1.0
  */
 public class FreeMarkerConfig {
+    private static File file = null;
 
-    public static Configuration getInstance(File file){
+    public static Configuration getInstance(){
 
         Configuration config = InnerClass.configuration;
+        FreeMarkerConfig.file = ClassUtils.getResourceFile();
         config.setDefaultEncoding("UTF-8");
         try {
             config.setDirectoryForTemplateLoading(file);
@@ -30,6 +32,10 @@ public class FreeMarkerConfig {
 
     private static class InnerClass{
         private static final Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
+    }
+
+    public static File getResourceFile() {
+        return file;
     }
 
 }

@@ -12,18 +12,18 @@ import java.util.List;
  */
 public class Table {
 
-    //数据库中表名
+    /*数据库中表名*/
     private String tableName;
-    //首字母大写 如果有下划线则进行处理
+    /*首字母大写 如果有下划线则进行处理*/
     private String upperCaseName;
-    //首字母小写 如果有下划线进行处理
+    /*首字母小写 如果有下划线进行处理*/
     private String lowerCaseName;
-    //表名注释
+    /*表名注释*/
     private String comment;
-    //主键类型
+    /*主键类型*/
     private String idType;
 
-    //id是否自动递增
+    /*id是否自动递增*/
     private String autoIncrement;
     /*是否截取前缀*/
     private boolean isPrefix = false;
@@ -35,12 +35,7 @@ public class Table {
 
     private List<Column> columns;
 
-//    public Table(String tableName, String comment) {
-//        this.tableName = tableName.toLowerCase();
-//        this.upperCaseName = StringUtils.getFirstUpperCaseName(this.tableName);
-//        this.lowerCaseName = StringUtils.getFirstLowerCaseName(this.upperCaseName);
-//        this.comment = comment;
-//    }
+
 
     public Table(TableBuilder builder) {
         this.tableName = builder.tableName;

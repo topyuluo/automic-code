@@ -2,11 +2,10 @@ package com.yuluo.auto.source;
 
 import com.yuluo.auto.freemark.FreeMarkerConfig;
 import com.yuluo.auto.model.Table;
-import com.yuluo.auto.util.Assert;
-import com.yuluo.auto.util.ClassUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,6 +23,8 @@ import static com.yuluo.auto.constants.Constant.*;
  */
 public class FileResource {
 
+    private static Logger log = Logger.getLogger(FileResource.class);
+
     private Resource resource;
 
     public FileResource(Resource resource) {
@@ -34,21 +35,19 @@ public class FileResource {
      * 加载模板信息
      */
     public void loadTemplate(Table table) {
-        File file = ClassUtils.getResourceFile();
-        Configuration config = FreeMarkerConfig.getInstance(file);
-        doProcess(table, file, config);
+        Configuration config = FreeMarkerConfig.getInstance();
+        doProcess(table ,config);
     }
 
     /**
      * 流程处理
      *
      * @param table
-     * @param file
      * @param config
      */
-    private void doProcess(Table table, File file, Configuration config) {
+    private void doProcess(Table table , Configuration config) {
         try {
-            for (File f : Objects.requireNonNull(file.listFiles())) {
+            for (File f : Objects.requireNonNull(FreeMarkerConfig.getResourceFile().listFiles())) {
                 createFile(table, config, f);
             }
         } catch (TemplateException | IOException e) {
@@ -68,12 +67,12 @@ public class FileResource {
     private void createFile(Table table, Configuration config, File f) throws IOException, TemplateException {
         String name = f.getName();
         Template template = config.getTemplate(name);
-        System.out.println("-----------> 加载模板" + name);
+        log.info("load template- " + name.substring(0 ,name.indexOf(".")));
         name = getFilePath(table.getUpperCaseName(), name);
         try (Writer out = new FileWriter(name)) {
             template.process(table, out);
         }
-        System.out.println("-----------> 生成文件 ：" + name);
+        log.info("create file- " + name);
     }
 
     /**
@@ -83,7 +82,7 @@ public class FileResource {
      * @return
      */
     private String getFilePath(String content, String fileName) {
-        StringBuilder sb = handlePath(resource.getFirstProperty(PATH) , fileName);
+        StringBuilder sb = handlePath(resource.getApplictionProperty(PATH) , fileName);
         mkdirs(sb);
         String prefix = fileName.substring(0, fileName.indexOf("."));
         if (prefix.toLowerCase().contains(MAPPER)) {

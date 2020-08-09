@@ -1,5 +1,9 @@
 package com.yuluo.auto.util;
 
+import com.yuluo.auto.constants.Constant;
+
+import static com.yuluo.auto.constants.Constant.UNDER_LINE;
+
 /**
  * @Description
  * @Author 蚂蚁不是ant
@@ -13,7 +17,7 @@ public class StringUtils {
      * @return
      */
     public static  String getFirstUpperCaseName(String tableName) {
-        String[] names = tableName.split("_");
+        String[] names = tableName.split(UNDER_LINE);
         StringBuilder sb = new StringBuilder();
         for (String name : names) {
             sb.append(name.substring(0, 1).toUpperCase()).append(name.substring(1));

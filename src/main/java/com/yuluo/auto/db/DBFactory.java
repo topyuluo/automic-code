@@ -3,6 +3,8 @@ package com.yuluo.auto.db;
 import java.sql.*;
 import java.util.Properties;
 
+import static com.yuluo.auto.constants.Constant.DB_URL;
+
 /**
  * @Description 数据库工厂类
  * @Author 蚂蚁不是ant
@@ -20,7 +22,7 @@ public class DBFactory {
     private String MYSQL = "mysql";
 
     public Connection getConnection(Properties properties) {
-        boolean result = getDBType(properties.getProperty("db.url"));
+        boolean result = getDBType(properties.getProperty(DB_URL));
         if (result) {
             return new MysqlDB(properties).getConnection();
         }

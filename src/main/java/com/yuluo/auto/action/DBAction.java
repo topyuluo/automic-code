@@ -6,6 +6,7 @@ import com.yuluo.auto.model.Column;
 import com.yuluo.auto.model.Table;
 import com.yuluo.auto.source.Resource;
 import com.yuluo.auto.util.Assert;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -25,6 +26,8 @@ import static java.util.stream.Collectors.toList;
  * @Version V1.0
  */
 public class DBAction {
+    private static Logger log = Logger.getLogger(DBAction.class);
+
     private DBFactory factory = null;
     private Resource resource;
 
@@ -51,7 +54,7 @@ public class DBAction {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("---> 获取MetaData异常 <----");
+           log.error(e.getMessage());
         } finally {
             factory.close(conn);
         }
@@ -91,11 +94,11 @@ public class DBAction {
                 .comment(comment)
                 .idType(getIdType(columns, tableName, metaData))
                 .autoIncrement(getInCrement(columns))
-                .basePackage(resource.getFirstProperty(BASE_PACKAGE))
-                .daoPackage(resource.getFirstProperty(DAO_PACKAGE))
+                .basePackage(resource.getApplictionProperty(BASE_PACKAGE))
+                .daoPackage(resource.getApplictionProperty(DAO_PACKAGE))
                 .columns(columns)
                 .build();
-        System.out.println("-----------> 加载表 ：" + tableName + " <-----------------");
+        log.info("load table-" + tableName);
         return table;
     }
 
@@ -120,7 +123,7 @@ public class DBAction {
 
         List<String> keys = null;
         while (rskey.next()) {
-            String id = rskey.getString("COLUMN_NAME");
+            String id = rskey.getString(COLUMN_NAME);
             keys = columns.stream()
                     .filter(c -> c.getColumnName().equals(id))
                     .map(Column::getColumnType)

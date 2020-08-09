@@ -1,6 +1,7 @@
 package com.yuluo.auto;
 
 import com.yuluo.auto.db.DBUtil;
+import org.apache.log4j.Logger;
 
 /**
  * @Description 程序入口
@@ -9,15 +10,13 @@ import com.yuluo.auto.db.DBUtil;
  * @Version V1.0
  */
 public class Application {
+    private static Logger log = Logger.getLogger(Application.class);
     public static void main(String[] args) {
-        System.out.println("-----------> 程序启动 <-----------------");
+        log.info("application start ... ");
         start();
-        System.out.println("-----------> 执行完成 <-----------------");
+        log.info("success .... ");
     }
 
-    /**
-     * 执行初始化数据库操作
-     */
     private static void start(){
         DBUtil.getInstance().init();
     }

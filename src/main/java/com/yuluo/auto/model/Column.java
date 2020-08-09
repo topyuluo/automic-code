@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static com.yuluo.auto.constants.Constant.*;
+
 /**
  * @Description 存储字段信息
  * @Author 蚂蚁不是ant
@@ -22,10 +24,10 @@ public class Column {
     private String autoIncrement;
 
     public Column(ResultSet rs , Properties resource) throws SQLException {
-        this.columnName = rs.getString("COLUMN_NAME");
-        this.columnType = rs.getString("TYPE_NAME");
-        this.comment = rs.getString("REMARKS");
-        this.autoIncrement = rs.getString("IS_AUTOINCREMENT");
+        this.columnName = rs.getString(COLUMN_NAME);
+        this.columnType = rs.getString(TYPE_NAME);
+        this.comment = rs.getString(UPPER_REMARKS);
+        this.autoIncrement = rs.getString(IS_AUTOINCREMENT);
         this.upperCaseName = StringUtils.getFirstUpperCaseName(this.columnName);
         this.lowerCaseName = StringUtils.getFirstLowerCaseName(this.upperCaseName);
         this.javaType = resource.getProperty(this.columnType);

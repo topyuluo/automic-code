@@ -12,12 +12,21 @@ import java.util.HashMap;
 public interface Constant {
 
     String DB_URL = "db.url";
+
     String TABLE_NAME = "TABLE_NAME";
     String REMARKS = "Remarks";
+    String COLUMN_NAME = "COLUMN_NAME";
+    String TYPE_NAME = "TYPE_NAME";
+    String UPPER_REMARKS = "REMARKS";
+    String IS_AUTOINCREMENT = "IS_AUTOINCREMENT";
+
     String BASE_PACKAGE = "base.package";
     String DAO_PACKAGE = "dao.package";
+
     String PATH = "path";
     String MAPPER = "model";
+
+    String UNDER_LINE = "_";
 
     HashMap<String, String> FILE_MAPPING = new HashMap<String, String>() {{
         put("Controller.ftl", "controller");

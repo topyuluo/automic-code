@@ -9,7 +9,7 @@ package com.yuluo.auto.util;
 public abstract class Assert {
 
     public static void notEmpty(String content, String msg) {
-        if ("".equals(msg)){
+        if ("".equals(content)){
             throw new IllegalArgumentException(msg);
         }
     }
