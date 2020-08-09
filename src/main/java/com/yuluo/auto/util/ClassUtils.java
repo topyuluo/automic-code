@@ -1,6 +1,7 @@
 package com.yuluo.auto.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -27,6 +28,15 @@ public abstract class ClassUtils {
             }
         }
         return classLoader;
+    }
+
+    /**
+     * 获取文件流
+     * @param source
+     * @return
+     */
+    public static InputStream getClassLoaderAsStream(String source){
+        return getDefaultClassLoader().getResourceAsStream(source);
     }
 
     /**

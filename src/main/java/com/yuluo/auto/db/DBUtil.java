@@ -46,4 +46,9 @@ public class DBUtil {
         return db;
     }
 
+    public void load(HashMap<String, String> params) {
+       resource.load(params);
+       process();
+    }
+
 }

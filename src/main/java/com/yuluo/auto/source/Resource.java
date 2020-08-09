@@ -1,12 +1,14 @@
 package com.yuluo.auto.source;
 
 import com.yuluo.auto.util.Assert;
+import com.yuluo.auto.util.ClassUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -26,29 +28,13 @@ public class Resource {
      * 加载资源文件
      */
     public void load() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        loadFile(resources);
+    }
 
-        InputStream in = null;
-        try {
-            for (int i = 0; i < resources.length; i++) {
-                in = classLoader.getResourceAsStream(resources[i]);
-                Properties propert = new Properties();
-                propert.load(in);
-                list.add(propert);
-                log.info("load resource-" + resources[i]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void load(Map<String, String> map) {
+        loadMap(map);
+        loadFile(resources[1]);
+        log.info("load resource-" + resources[1]);
     }
 
     /**
@@ -81,4 +67,46 @@ public class Resource {
         Assert.notEmpty(key, "property is null ");
         return list.get(0).getProperty(key);
     }
+
+
+    /**
+     * 加载命令行输入的参数
+     *
+     * @param map
+     */
+    private void loadMap(Map<String, String> map) {
+        Properties propert = new Properties();
+        map.forEach(propert::setProperty);
+        list.add(propert);
+        log.info("user input params :" + map);
+    }
+
+    private void loadFile(String... files) {
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+        InputStream in = null;
+        Properties properties = null;
+        try {
+            for (String file : files) {
+                in = classLoader.getResourceAsStream(file);
+                properties = getProperties();
+                properties.load(in);
+                list.add(properties);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private Properties getProperties() {
+        return new Properties();
+    }
+
 }

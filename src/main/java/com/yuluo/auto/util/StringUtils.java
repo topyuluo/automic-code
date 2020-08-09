@@ -14,9 +14,10 @@ public class StringUtils {
 
     /**
      * 字符串首字母大写 驼峰格式
+     *
      * @return
      */
-    public static  String getFirstUpperCaseName(String tableName) {
+    public static String getFirstUpperCaseName(String tableName) {
         String[] names = tableName.split(UNDER_LINE);
         StringBuilder sb = new StringBuilder();
         for (String name : names) {
@@ -27,11 +28,19 @@ public class StringUtils {
 
     /**
      * 首字母小写
+     *
      * @return
      */
     public static String getFirstLowerCaseName(String upperCaseName) {
         char[] chars = upperCaseName.toCharArray();
         chars[0] += 32;
         return String.valueOf(chars);
+    }
+
+    public static boolean isEmpty(String[] args) {
+        if (args == null || args.length == 0) {
+            return false;
+        }
+        return true;
     }
 }
