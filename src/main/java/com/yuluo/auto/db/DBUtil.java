@@ -51,4 +51,8 @@ public class DBUtil {
        process();
     }
 
+    public void load(String path) {
+        resource.load(path);
+        process();
+    }
 }

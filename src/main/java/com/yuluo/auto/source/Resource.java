@@ -4,8 +4,7 @@ import com.yuluo.auto.util.Assert;
 import com.yuluo.auto.util.ClassUtils;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,25 @@ public class Resource {
         loadMap(map);
         loadFile(resources[1]);
         log.info("load resource-" + resources[1]);
+    }
+
+    public void load(String path) {
+        loadConfFile(path);
+        loadFile(resources[1]);
+        log.info("load resource-" + resources[1]);
+    }
+
+    private void loadConfFile(String path) {
+        try {
+
+            InputStream in = new FileInputStream(new File(path));
+            Properties properties = new Properties();
+            properties.load(in);
+            list.add(properties);
+            log.info("load conf file: " + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -91,6 +109,7 @@ public class Resource {
                 properties = getProperties();
                 properties.load(in);
                 list.add(properties);
+                log.info("load file resource : " + file);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,6 +120,7 @@ public class Resource {
                     in.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    log.error("load resource file exception :" + e.getMessage());
                 }
             }
         }

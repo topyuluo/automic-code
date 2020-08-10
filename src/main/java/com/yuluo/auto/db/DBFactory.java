@@ -1,6 +1,10 @@
 package com.yuluo.auto.db;
 
+import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
+import org.apache.log4j.Logger;
+
 import java.sql.*;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.yuluo.auto.constants.Constant.DB_URL;
@@ -13,6 +17,7 @@ import static com.yuluo.auto.constants.Constant.DB_URL;
  */
 public class DBFactory {
 
+    private static Logger log = Logger.getLogger(DBFactory.class);
     /**
      * 获取数据库连接
      *
@@ -24,7 +29,11 @@ public class DBFactory {
     public Connection getConnection(Properties properties) {
         boolean result = getDBType(properties.getProperty(DB_URL));
         if (result) {
-            return new MysqlDB(properties).getConnection();
+            try {
+                return new MysqlDB(properties).getConnection();
+            } catch (MySQLTimeoutException e) {
+                log.error(e.getMessage());
+            }
         }
         return null;
     }
@@ -65,14 +74,14 @@ public class DBFactory {
             }
         }
 
-        public Connection getConnection() {
+        public Connection getConnection() throws MySQLTimeoutException {
             Connection conn = null;
             try {
                 conn = DriverManager.getConnection(properties.getProperty("db.url"), properties.getProperty("db.username"), properties.getProperty("db.password"));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            return conn;
+            return Optional.ofNullable(conn).orElseThrow(()-> new MySQLTimeoutException("获取数据库连接超时"));
         }
     }
 }

@@ -4,6 +4,8 @@ import com.yuluo.auto.db.DBUtil;
 import com.yuluo.auto.util.StringUtils;
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 
 /**
@@ -18,7 +20,9 @@ public class Application {
 
     public static void main(String[] args) {
         log.info("application start ... ");
+        String[] conf = null;
         if (StringUtils.isEmpty(args)) {
+            log.info("输入参数的个数：" + args.length);
             if (args.length == 5) {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("db.url", args[0]);
@@ -28,6 +32,9 @@ public class Application {
                 map.put("path", args[4]);
                 start(map);
             }
+        } else if ((conf =judgeConfig()).length != 0) {
+            System.out.println("=====================");
+            start(conf[0]);
         } else {
             start();
         }
@@ -40,5 +47,33 @@ public class Application {
 
     private static void start() {
         DBUtil.getInstance().init();
+    }
+
+    private static void start(String path){
+        DBUtil.getInstance().load(path);
+    }
+
+    public static String[] judgeConfig() {
+        String userDir = System.getProperty("user.dir");
+        System.out.println(userDir);
+        String dir = userDir + File.separator + "jdbc.properties";
+        System.out.println(userDir);
+        File file = getFile(dir);
+        if (file.exists()) {
+            System.out.println(userDir + "adfdsff");
+            return new String[]{dir};
+        }
+        dir = userDir + File.separator + "conf" + File.separator + "jdbc.properties";
+        System.out.println(dir);
+        file = getFile(dir);
+        if (file.exists()) {
+            System.out.println("_______________________");
+            return new String[]{dir};
+        }
+        return new String[0];
+    }
+
+    public static File getFile(String path) {
+        return new File(path);
     }
 }
