@@ -12,25 +12,25 @@ import java.util.List;
  */
 public class Table {
 
-    /*数据库中表名*/
+    /**数据库中表名*/
     private String tableName;
-    /*首字母大写 如果有下划线则进行处理*/
+    /**首字母大写 如果有下划线则进行处理*/
     private String upperCaseName;
-    /*首字母小写 如果有下划线进行处理*/
+    /**首字母小写 如果有下划线进行处理*/
     private String lowerCaseName;
-    /*表名注释*/
+    /**表名注释*/
     private String comment;
-    /*主键类型*/
+    /**主键类型*/
     private String idType;
 
-    /*id是否自动递增*/
+    /**id是否自动递增*/
     private String autoIncrement;
-    /*是否截取前缀*/
+    /**是否截取前缀*/
     private boolean isPrefix = false;
-    /*base package*/
+    /**base package*/
     private String basePackage;
 
-    /*dao的配置路径*/
+    /**dao的配置路径*/
     private String daoPackage;
 
     private List<Column> columns;

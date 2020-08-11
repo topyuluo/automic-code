@@ -1,4 +1,4 @@
-package com.yuluo.auto.db;
+package com.yuluo.auto.service;
 
 import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
 import org.apache.log4j.Logger;
@@ -15,35 +15,32 @@ import static com.yuluo.auto.constants.Constant.DB_URL;
  * @Date 2020/8/5 22:00
  * @Version V1.0
  */
-public class DBFactory {
+public class DbFactory {
 
-    private static Logger log = Logger.getLogger(DBFactory.class);
+    private static Logger log = Logger.getLogger(DbFactory.class);
     /**
      * 获取数据库连接
      *
      * @param properties
      * @return
      */
-    private String MYSQL = "mysql";
+    private String mysql = "mysql";
 
-    public Connection getConnection(Properties properties) {
-        boolean result = getDBType(properties.getProperty(DB_URL));
+    public Connection getConnection(Properties properties) throws MySQLTimeoutException {
+        boolean result = getDbType(properties.getProperty(DB_URL));
         if (result) {
-            try {
-                return new MysqlDB(properties).getConnection();
-            } catch (MySQLTimeoutException e) {
-                log.error(e.getMessage());
-            }
+            return new MysqlDb(properties).getConnection();
         }
-        return null;
+        throw new UnsupportedOperationException("currently only supports mysql database");
     }
 
     /**
      * 资源关闭
+     *
      * @param conn
      */
-    public void close(Connection conn ){
-        if (conn != null){
+    public void close(Connection conn) {
+        if (conn != null) {
             try {
                 conn.close();
             } catch (SQLException e) {
@@ -58,18 +55,18 @@ public class DBFactory {
      * @param property
      * @return
      */
-    private boolean getDBType(String property) {
-        return property.toLowerCase().contains(MYSQL);
+    private boolean getDbType(String property) {
+        return property.toLowerCase().contains(mysql);
     }
 
-    private static class MysqlDB {
-        private Properties properties ;
-        public MysqlDB(Properties properties) {
+    private static class MysqlDb {
+        private Properties properties;
+
+        public MysqlDb(Properties properties) {
             this.properties = properties;
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
                 System.out.println("----> 注册驱动发生异常 <----");
             }
         }
@@ -79,9 +76,9 @@ public class DBFactory {
             try {
                 conn = DriverManager.getConnection(properties.getProperty("db.url"), properties.getProperty("db.username"), properties.getProperty("db.password"));
             } catch (SQLException e) {
-                e.printStackTrace();
+                log.error(e);
             }
-            return Optional.ofNullable(conn).orElseThrow(()-> new MySQLTimeoutException("获取数据库连接超时"));
+            return Optional.ofNullable(conn).orElseThrow(() -> new MySQLTimeoutException("获取数据库连接超时"));
         }
     }
 }

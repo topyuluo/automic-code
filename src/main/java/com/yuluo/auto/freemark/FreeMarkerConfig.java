@@ -15,9 +15,9 @@ import java.io.IOException;
 public class FreeMarkerConfig {
     private static File file = null;
 
-    public static Configuration getInstance(){
+    public static Configuration getInstance() throws IOException {
 
-        Configuration config = InnerClass.configuration;
+        Configuration config = new Configuration(Configuration.VERSION_2_3_30);
         FreeMarkerConfig.file = ClassUtils.getResourceFile();
         config.setDefaultEncoding("UTF-8");
         try {
@@ -26,10 +26,6 @@ public class FreeMarkerConfig {
             e.printStackTrace();
         }
         return config;
-    }
-
-    private static class InnerClass{
-        private static final Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
     }
 
     public static File getResourceFile() {

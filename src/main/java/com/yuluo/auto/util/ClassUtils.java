@@ -1,12 +1,10 @@
 package com.yuluo.auto.util;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
+import org.apache.log4j.Logger;
 
-import javax.swing.plaf.basic.BasicEditorPaneUI;
 import java.io.*;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.jar.JarFile;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static com.yuluo.auto.constants.Constant.TEMPLATES_FILE;
 
@@ -17,6 +15,12 @@ import static com.yuluo.auto.constants.Constant.TEMPLATES_FILE;
  * @Version V1.0
  */
 public abstract class ClassUtils {
+
+    private static final Logger log = Logger.getLogger(ClassUtils.class);
+
+    private static String TEMPLATES = "templates";
+
+    private static String TEMPLATE_DIR = "";
 
     /**
      * 获取类加载
@@ -49,48 +53,65 @@ public abstract class ClassUtils {
      *
      * @return
      */
-    public static File getResourceFile() {
+    public static File getResourceFile() throws IOException {
         String file = getResourcePath();
         return new File(file);
     }
 
-    private static String getResourcePath() {
-        String template = getDefaultClassLoader().getResource("templates").getFile();
-        if (template.contains("jar")) {
+    private static String getResourcePath() throws IOException {
+        String template = getDefaultClassLoader().getResource(TEMPLATES).getFile();
+        String jar = "jar";
+        if (template.contains(jar)) {
             String base = System.getProperty("user.dir");
-            String newPath = base + File.separator + "templates" + File.separator;
-            mkdir(newPath);
-            for (String name : TEMPLATES_FILE) {
-                InputStream in = getDefaultClassLoader().getResourceAsStream("templates/" + name);
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(in , "UTF-8") );
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    BufferedWriter  osw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newPath + name), "UTF-8"));
-                    String line = reader.readLine();
-                    while (line != null) {
-                        osw.write(line);
-                        osw.newLine();
-                        line = reader.readLine();
-                    }
-                    osw.flush();
-                    osw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            template = newPath;
+            TEMPLATE_DIR = base + File.separator + TEMPLATES + File.separator;
+            mkdir();
+            copyTemplates();
+            template = TEMPLATE_DIR;
         }
         return template;
     }
 
-    public static void mkdir(String base) {
-        File file = new File(base);
+    private static void copyTemplates() throws IOException {
+        for (String name : TEMPLATES_FILE) {
+            InputStream in = getClassLoaderAsStream(TEMPLATES + "/" + name);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            BufferedWriter osw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(TEMPLATE_DIR + name), StandardCharsets.UTF_8));
+            String line = reader.readLine();
+            while (line != null) {
+                osw.write(line);
+                osw.newLine();
+                line = reader.readLine();
+            }
+            osw.flush();
+            osw.close();
+            reader.close();
+        }
+    }
+
+
+    public static void mkdir() {
+        File file = new File(TEMPLATE_DIR);
         if (!file.exists()) {
             file.mkdirs();
+        }
+    }
+
+
+    public static boolean delete(String name) {
+        File file = new File(name);
+        if (file.isDirectory()) {
+            String[] files = file.list();
+            for (String f : files) {
+                delete(name + f);
+            }
+        }
+       return file.delete();
+    }
+
+    public static void delete() {
+        boolean flag = delete(TEMPLATE_DIR);
+        if (flag){
+            log.warn("delete success ... ");
         }
     }
 }

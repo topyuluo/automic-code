@@ -1,7 +1,5 @@
 package com.yuluo.auto.util;
 
-import com.yuluo.auto.constants.Constant;
-
 import static com.yuluo.auto.constants.Constant.UNDER_LINE;
 
 /**
@@ -37,10 +35,10 @@ public class StringUtils {
         return String.valueOf(chars);
     }
 
-    public static boolean isEmpty(String[] args) {
-        if (args == null || args.length == 0) {
-            return false;
+    public static boolean isNotEmpty(String[] args) {
+        if (args != null && args.length > 0) {
+            return true;
         }
-        return true;
+        return false;
     }
 }

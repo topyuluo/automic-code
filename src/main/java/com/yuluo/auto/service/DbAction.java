@@ -1,10 +1,10 @@
-package com.yuluo.auto.action;
+package com.yuluo.auto.service;
 
+import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
 import com.yuluo.auto.constants.Constant;
-import com.yuluo.auto.db.DBFactory;
 import com.yuluo.auto.model.Column;
 import com.yuluo.auto.model.Table;
-import com.yuluo.auto.source.Resource;
+import com.yuluo.auto.source.BaseResource;
 import com.yuluo.auto.util.Assert;
 import org.apache.log4j.Logger;
 
@@ -25,23 +25,26 @@ import static java.util.stream.Collectors.toList;
  * @Date 2020/8/5 23:51
  * @Version V1.0
  */
-public class DBAction {
-    private static Logger log = Logger.getLogger(DBAction.class);
+public class DbAction {
+    private static Logger log = Logger.getLogger(DbAction.class);
 
-    private DBFactory factory = null;
-    private Resource resource;
+    private final String MARK = "?";
+    private DbFactory factory = null;
+    private BaseResource resource;
 
-    public DBAction(Resource resource) {
-        this.factory = new DBFactory();
+    public DbAction(BaseResource resource) {
+        this.factory = new DbFactory();
         this.resource = resource;
     }
 
     /**
      * 获取数据库中的所有表
      */
-    public List<Table> getAllTables() {
+    public List<Table> getAllTables() throws MySQLTimeoutException {
 
         Connection conn = factory.getConnection(resource.getResource(0));
+        Assert.notNull(conn, "Connection is not null !");
+
         DatabaseMetaData metaData = null;
         List<Table> tables = new ArrayList<>();
         try {
@@ -53,8 +56,7 @@ public class DBAction {
                 tables.add(table);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-           log.error(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             factory.close(conn);
         }
@@ -67,12 +69,12 @@ public class DBAction {
      * @param resource
      * @return
      */
-    private String getDatabase(Resource resource) {
+    private String getDatabase(BaseResource resource) {
         String url = resource.getResource(0).getProperty(Constant.DB_URL);
         int start = url.lastIndexOf("/");
         int end = 0;
-        if (url.contains("?")) {
-            end = url.indexOf("?");
+        if (url.contains(MARK)) {
+            end = url.indexOf(MARK);
         } else {
             end = url.length();
         }
@@ -88,7 +90,9 @@ public class DBAction {
         String comment = rs.getString(REMARKS);
 
         List<Column> columns = getAllColumns(tableName, metaData, resource.getResource(1));
-
+        if (columns == null || columns.size() == 0) {
+            throw new SQLException("没有查询到表中的字段信息!");
+        }
         Table table = Table.newBuilder()
                 .tableName(tableName)
                 .comment(comment)
@@ -98,16 +102,16 @@ public class DBAction {
                 .daoPackage(resource.getApplictionProperty(DAO_PACKAGE))
                 .columns(columns)
                 .build();
-        log.info("load table-" + tableName);
+        log.info("load table - " + tableName);
         return table;
     }
 
 
     private String getInCrement(List<Column> columns) {
         List<String> ids = columns.stream()
-                .filter(c -> c.getColumnName().equals("id"))
+                .filter(c -> "id".equals(c.getColumnName()))
                 .map(Column::getAutoIncrement).collect(toList());
-        return ids.get(0);
+        return ids.isEmpty() ? "" : ids.get(0);
     }
 
     /**
@@ -120,7 +124,6 @@ public class DBAction {
      */
     private String getIdType(List<Column> columns, String tableName, DatabaseMetaData metaData) throws SQLException {
         ResultSet rskey = metaData.getPrimaryKeys(null, null, tableName);
-
         List<String> keys = null;
         while (rskey.next()) {
             String id = rskey.getString(COLUMN_NAME);
@@ -129,7 +132,7 @@ public class DBAction {
                     .map(Column::getColumnType)
                     .collect(toList());
         }
-        return getJavaType(keys.get(0));
+        return getJavaType(keys.size() == 0  ? "" : keys.get(0));
     }
 
     /**
@@ -139,8 +142,10 @@ public class DBAction {
      * @return
      */
     private String getJavaType(String sqlType) {
-        Assert.notEmpty(sqlType, "sql type is not null ");
-        return this.resource.getResource(1).getProperty(sqlType);
+        if ("".equals(sqlType)) {
+            return "";
+        }
+        return this.resource.getTypeMappingProperty(sqlType);
     }
 
     /**
@@ -152,7 +157,7 @@ public class DBAction {
      * @return
      */
     private List<Column> getAllColumns(String tableName, DatabaseMetaData metaData, Properties resource) throws SQLException {
-        ResultSet rs = metaData.getColumns(null, null, tableName, null);
+        ResultSet rs = metaData.getColumns(getDatabase(this.resource), null, tableName, null);
         List<Column> columns = null;
         Column column = null;
         while (rs.next()) {

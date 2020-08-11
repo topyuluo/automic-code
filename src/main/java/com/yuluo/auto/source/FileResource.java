@@ -8,6 +8,7 @@ import freemarker.template.TemplateException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.util.List;
 import java.util.Objects;
 
 import static com.yuluo.auto.constants.Constant.*;
@@ -22,18 +23,21 @@ public class FileResource {
 
     private static Logger log = Logger.getLogger(FileResource.class);
 
-    private Resource resource;
+    private BaseResource resource;
+    private List<Table> tables ;
 
-    public FileResource(Resource resource) {
+    public FileResource(BaseResource resource , List<Table> tables) {
         this.resource = resource;
+        this.tables = tables;
     }
 
     /**
      * 加载模板信息
      */
-    public void loadTemplate(Table table) {
+    public void loadTemplate() throws IOException {
         Configuration config = FreeMarkerConfig.getInstance();
-        doProcess(table ,config);
+        tables.forEach(t -> doProcess(t , config));
+        config.clearTemplateCache();
     }
 
     /**
@@ -45,7 +49,7 @@ public class FileResource {
     private void doProcess(Table table , Configuration config) {
         try {
             for (File f : Objects.requireNonNull(FreeMarkerConfig.getResourceFile().listFiles())) {
-                createFile(table, config, f);
+                createFile(table, config, f.getName());
             }
         } catch (TemplateException | IOException e) {
             e.printStackTrace();
@@ -57,19 +61,17 @@ public class FileResource {
      *
      * @param table
      * @param config
-     * @param f
      * @throws IOException
      * @throws TemplateException
      */
-    private void createFile(Table table, Configuration config, File f) throws IOException, TemplateException {
-        String name = f.getName();
+    private void createFile(Table table, Configuration config, String name ) throws IOException, TemplateException {
         Template template = config.getTemplate(name);
-        log.info("load template- " + name.substring(0 ,name.indexOf(".")));
+        log.warn("load template - " + name.substring(0 ,name.indexOf(".")));
         name = getFilePath(table.getUpperCaseName(), name);
         try (BufferedWriter writer = new BufferedWriter (new OutputStreamWriter (new FileOutputStream (name,true),"UTF-8"));) {
             template.process(table, writer);
         }
-        log.info("create file- " + name);
+        log.info("create file - " + name);
     }
 
     /**
@@ -82,12 +84,13 @@ public class FileResource {
         StringBuilder sb = handlePath(resource.getApplictionProperty(PATH) , fileName);
         mkdirs(sb);
         String prefix = fileName.substring(0, fileName.indexOf("."));
+        String mapper = "Mapper";
         if (prefix.toLowerCase().contains(MAPPER)) {
             sb.append(content);
         } else {
             sb.append(content).append(fileName, 0, fileName.indexOf("."));
         }
-        if (fileName.contains("Mapper")) {
+        if (fileName.contains(mapper)) {
             sb.append(".xml");
         } else {
             sb.append(".java");
@@ -102,8 +105,9 @@ public class FileResource {
      */
     private StringBuilder handlePath(String basePath , String fileName) {
         StringBuilder sb = new StringBuilder(basePath);
-        if (basePath.contains("/")) {
-            basePath = basePath.replaceAll("/", File.separator);
+        String backslash = "/";
+        if (basePath.contains(backslash)) {
+            basePath = basePath.replaceAll(backslash, File.separator);
         }
         if (!basePath.endsWith(File.separator)) {
             sb.append(File.separator);
