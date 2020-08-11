@@ -56,6 +56,9 @@ public class DbFactory {
      * @return
      */
     private boolean getDbType(String property) {
+        if (null == property || "".equals(property)){
+            throw new IllegalArgumentException("属性加载失败 ...." );
+        }
         return property.toLowerCase().contains(mysql);
     }
 

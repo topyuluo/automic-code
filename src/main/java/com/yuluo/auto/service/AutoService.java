@@ -73,15 +73,18 @@ public class AutoService extends BaseResource {
     }
 
     public static String judgeConfig() {
-        String[] files = new String[]{"jdbc.properties", "conf" + File.separator + "jdbc.properties"};
+        log.warn("尝试从外部配置文件加载配置 .... ");
+        String[] files = new String[]{"application.properties", "conf" + File.separator + "application.properties"};
         String userDir = System.getProperty("user.dir");
         File f = null;
         for (String file : files) {
             f = getFile(userDir, file);
             if (f.exists()) {
+                log.warn("存在外部文件, 加载到程序中 ... ");
                 return f.getAbsolutePath();
             }
         }
+        log.warn("无外部配置文件，若配置请检查路径及文件名：application.properties");
         return "";
     }
 
