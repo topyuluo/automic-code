@@ -1,7 +1,10 @@
 package com.yuluo.auto;
 
+import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
 import com.yuluo.auto.service.AutoService;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  * @Description 程序入口
@@ -13,7 +16,7 @@ public class Application {
 
     private static Logger log = Logger.getLogger(Application.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, MySQLTimeoutException {
         log.info("application start ... ");
         long start = System.currentTimeMillis();
 

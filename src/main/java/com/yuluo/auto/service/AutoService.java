@@ -39,14 +39,10 @@ public class AutoService extends BaseResource {
         return service;
     }
 
-    public void doMain(String[] args) {
+    public void doMain(String[] args) throws IOException, MySQLTimeoutException {
         //加载资源
         load(args);
-        try {
-            dbService.process();
-        } catch (MySQLTimeoutException | IOException e) {
-            log.error(e);
-        }
+        dbService.process();
         ClassUtils.delete();
     }
 
@@ -122,8 +118,6 @@ public class AutoService extends BaseResource {
         }
         log.info(userDir + "load file success .... ");
     }
-
-
 
 
 }

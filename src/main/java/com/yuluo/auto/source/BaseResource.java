@@ -21,8 +21,6 @@ public abstract class BaseResource {
 
     private final String[] resources = new String[]{"application.properties", "type_mapping.properties"};
     private final List<Properties> propertiesList = new ArrayList<>(resources.length);
-    private Map<String, Object> ymlMap = null;
-    private boolean isYml = false;
 
     /**
      * 加载命令行参数
@@ -31,6 +29,16 @@ public abstract class BaseResource {
      */
     protected void loadResource(Object obj) {
         load();
+        loadOuterResource(obj);
+        log.info("all file resource load success ....... ");
+    }
+
+    /**
+     * 加载外部配置文件
+     *
+     * @param obj
+     */
+    private void loadOuterResource(Object obj) {
         if (obj instanceof Map) {
             loadMapResource((Map<String, String>) obj);
         }
@@ -42,7 +50,6 @@ public abstract class BaseResource {
                 log.info("加载用户配置的资源文件异常！");
             }
         }
-        log.info("all file resource load success ....... ");
     }
 
     /**
@@ -109,7 +116,7 @@ public abstract class BaseResource {
         ymlToProperties(properties, "", map);
     }
 
-    public void closeInputStream(InputStream in) {
+    private void closeInputStream(InputStream in) {
         if (in != null) {
             try {
                 in.close();
@@ -128,7 +135,7 @@ public abstract class BaseResource {
         this.propertiesList.set(0, properties);
     }
 
-    protected void ymlToProperties(Properties properties, String key, Map<String, Object> map) {
+    private void ymlToProperties(Properties properties, String key, Map<String, Object> map) {
         map.forEach((k, v) -> {
             if (v instanceof Map) {
                 Map valueMap = (Map) v;
