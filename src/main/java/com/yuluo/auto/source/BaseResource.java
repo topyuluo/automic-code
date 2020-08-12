@@ -3,12 +3,11 @@ package com.yuluo.auto.source;
 import com.yuluo.auto.util.Assert;
 import com.yuluo.auto.util.ClassUtils;
 import org.apache.log4j.Logger;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @Description 资源加载类
@@ -22,9 +21,12 @@ public abstract class BaseResource {
 
     private final String[] resources = new String[]{"application.properties", "type_mapping.properties"};
     private final List<Properties> propertiesList = new ArrayList<>(resources.length);
+    private Map<String, Object> ymlMap = null;
+    private boolean isYml = false;
 
     /**
      * 加载命令行参数
+     *
      * @param obj
      */
     protected void loadResource(Object obj) {
@@ -93,11 +95,18 @@ public abstract class BaseResource {
                 this.propertiesList.add(properties);
                 log.info("load file resource : " + file);
             }
+
         } catch (IOException e) {
             log.error(e.getMessage());
         } finally {
             closeInputStream(in);
         }
+    }
+
+    protected void loadYml(Properties properties, InputStream in) {
+        Yaml yaml = new Yaml();
+        Map<String, Object> map = yaml.load(in);
+        ymlToProperties(properties, "", map);
     }
 
     public void closeInputStream(InputStream in) {
@@ -117,6 +126,17 @@ public abstract class BaseResource {
 
     protected void addResource(Properties properties) {
         this.propertiesList.set(0, properties);
+    }
+
+    protected void ymlToProperties(Properties properties, String key, Map<String, Object> map) {
+        map.forEach((k, v) -> {
+            if (v instanceof Map) {
+                Map valueMap = (Map) v;
+                ymlToProperties(properties, key + "." + k, valueMap);
+                return;
+            }
+            properties.setProperty((key + "." + k).substring(1), String.valueOf(v));
+        });
     }
 
     /**

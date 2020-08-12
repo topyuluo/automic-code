@@ -100,6 +100,7 @@ public class DbAction {
                 .autoIncrement(getInCrement(columns))
                 .basePackage(resource.getApplictionProperty(BASE_PACKAGE))
                 .daoPackage(resource.getApplictionProperty(DAO_PACKAGE))
+                .prefix(resource.getApplictionProperty(TABLE_PREFIX))
                 .columns(columns)
                 .build();
         log.info("load table - " + tableName);

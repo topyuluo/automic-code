@@ -5,12 +5,14 @@ import com.yuluo.auto.source.BaseResource;
 import com.yuluo.auto.util.ClassUtils;
 import com.yuluo.auto.util.StringUtils;
 import org.apache.log4j.Logger;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -74,8 +76,13 @@ public class AutoService extends BaseResource {
 
     public static String judgeConfig() {
         log.warn("尝试从外部配置文件加载配置 .... ");
-        String[] files = new String[]{"application.properties", "conf" + File.separator + "application.properties"};
+        String[] files = new String[]{"application.properties"
+                , "application.yml"
+                , "conf" + File.separator + "application.properties"
+                , "conf" + File.separator + "application.yml"};
+
         String userDir = System.getProperty("user.dir");
+
         File f = null;
         for (String file : files) {
             f = getFile(userDir, file);
@@ -103,11 +110,20 @@ public class AutoService extends BaseResource {
     @Override
     protected void loadUserFileResource(String userDir) throws IOException {
         log.info("load user file , dir : " + userDir);
+        String yml = "yml";
         try (InputStream in = new FileInputStream(userDir)) {
             Properties properties = getProperties();
-            properties.load(in);
+            if (userDir.endsWith(yml)) {
+                loadYml(properties, in);
+            } else {
+                properties.load(in);
+            }
             addResource(properties);
         }
         log.info(userDir + "load file success .... ");
     }
+
+
+
+
 }

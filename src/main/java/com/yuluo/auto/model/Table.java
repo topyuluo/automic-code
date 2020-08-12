@@ -1,5 +1,6 @@
 package com.yuluo.auto.model;
 
+import com.mysql.cj.protocol.x.ReusableInputStream;
 import com.yuluo.auto.util.StringUtils;
 
 import java.util.List;
@@ -12,45 +13,77 @@ import java.util.List;
  */
 public class Table {
 
-    /**数据库中表名*/
+    /**
+     * 数据库中表名
+     */
     private String tableName;
-    /**首字母大写 如果有下划线则进行处理*/
+    /**
+     * 首字母大写 如果有下划线则进行处理
+     */
     private String upperCaseName;
-    /**首字母小写 如果有下划线进行处理*/
+    /**
+     * 首字母小写 如果有下划线进行处理
+     */
     private String lowerCaseName;
-    /**表名注释*/
+    /**
+     * 表名注释
+     */
     private String comment;
-    /**主键类型*/
+    /**
+     * 主键类型
+     */
     private String idType;
 
-    /**id是否自动递增*/
+    /**
+     * id是否自动递增
+     */
     private String autoIncrement;
-    /**是否截取前缀*/
+    /**
+     * 是否截取前缀  1 截取  0 不截取
+     */
     private boolean isPrefix = false;
-    /**base package*/
+    /**
+     * base package
+     */
     private String basePackage;
 
-    /**dao的配置路径*/
+    /**
+     * dao的配置路径
+     */
     private String daoPackage;
 
     private List<Column> columns;
 
 
-
     public Table(TableBuilder builder) {
         this.tableName = builder.tableName;
-        this.upperCaseName = StringUtils.getFirstUpperCaseName(this.tableName);
+        this.isPrefix = builder.isPrefix;
+        this.upperCaseName = StringUtils.getFirstUpperCaseName(prefix(this.tableName));
         this.lowerCaseName = StringUtils.getFirstLowerCaseName(this.upperCaseName);
         this.comment = builder.comment;
         this.idType = builder.idType;
         this.autoIncrement = builder.autoIncrement;
-        this.isPrefix = builder.isPrefix;
+
         this.autoIncrement = builder.autoIncrement;
         this.basePackage = builder.basePackage;
         this.daoPackage = builder.daoPackage;
         this.columns = builder.columns;
     }
 
+    /**
+     * 是否截取表前缀
+     *
+     * @param tableName
+     * @return
+     */
+    private String prefix(String tableName) {
+        if (this.isPrefix) {
+            if (tableName.contains("_")) {
+                return tableName.substring(tableName.indexOf("_") + 1);
+            }
+        }
+        return tableName;
+    }
 
     public String getAutoIncrement() {
         return autoIncrement;
@@ -176,8 +209,8 @@ public class Table {
             return this;
         }
 
-        public TableBuilder prefix(boolean prefix) {
-            isPrefix = prefix;
+        public TableBuilder prefix(String prefix) {
+            isPrefix = "1".equals(prefix);
             return this;
         }
 
