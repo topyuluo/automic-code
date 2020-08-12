@@ -102,6 +102,7 @@ public class DbAction {
                 .daoPackage(resource.getApplictionProperty(DAO_PACKAGE))
                 .prefix(resource.getApplictionProperty(TABLE_PREFIX))
                 .columns(columns)
+                .lomback(resource.getApplictionProperty(LOMBACK))
                 .build();
         log.info("load table - " + tableName);
         return table;

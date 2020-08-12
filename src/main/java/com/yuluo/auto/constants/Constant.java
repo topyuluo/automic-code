@@ -23,6 +23,7 @@ public interface Constant {
     String DAO_PACKAGE = "dao.package";
 
     String TABLE_PREFIX = "table.prefix";
+    String LOMBACK = "lomback";
 
     String PATH = "path";
     String MAPPER = "model";

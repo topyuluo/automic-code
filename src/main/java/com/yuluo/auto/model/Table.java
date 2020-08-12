@@ -1,7 +1,7 @@
 package com.yuluo.auto.model;
 
-import com.mysql.cj.protocol.x.ReusableInputStream;
 import com.yuluo.auto.util.StringUtils;
+
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import java.util.List;
  * @Date 2020/8/5 22:39
  * @Version V1.0
  */
+
 public class Table {
 
     /**
@@ -53,6 +54,7 @@ public class Table {
     private String daoPackage;
 
     private List<Column> columns;
+    private String lomback;
 
 
     public Table(TableBuilder builder) {
@@ -68,6 +70,7 @@ public class Table {
         this.basePackage = builder.basePackage;
         this.daoPackage = builder.daoPackage;
         this.columns = builder.columns;
+        this.lomback = builder.lomback;
     }
 
     /**
@@ -169,6 +172,14 @@ public class Table {
         return new TableBuilder();
     }
 
+    public String getLomback() {
+        return lomback;
+    }
+
+    public void setLomback(String lomback) {
+        this.lomback = lomback;
+    }
+
     public static class TableBuilder {
         //数据库中表名
         private String tableName;
@@ -188,6 +199,8 @@ public class Table {
         private String daoPackage;
 
         private List<Column> columns;
+
+        private String lomback;
 
         public TableBuilder tableName(String tableName) {
             this.tableName = tableName;
@@ -226,6 +239,11 @@ public class Table {
 
         public TableBuilder columns(List<Column> columns) {
             this.columns = columns;
+            return this;
+        }
+
+        public TableBuilder lomback(String lomback) {
+            this.lomback = lomback;
             return this;
         }
 
