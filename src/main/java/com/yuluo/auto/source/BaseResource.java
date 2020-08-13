@@ -39,6 +39,9 @@ public abstract class BaseResource {
      * @param obj
      */
     private void loadOuterResource(Object obj) {
+        if (obj == null) {
+            return;
+        }
         if (obj instanceof Map) {
             loadMapResource((Map<String, String>) obj);
         }

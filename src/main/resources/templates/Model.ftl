@@ -1,4 +1,4 @@
-package ${basePackage}.orm.model;
+package ${packageModel}
 
 <#if lomback??>
 import lombok.Data;

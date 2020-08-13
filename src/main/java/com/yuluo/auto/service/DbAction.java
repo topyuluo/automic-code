@@ -63,6 +63,32 @@ public class DbAction {
         return tables;
     }
 
+    public List<Table> getTables(String[] tableNames) throws MySQLTimeoutException {
+
+        Connection conn = factory.getConnection(resource.getResource(0));
+        Assert.notNull(conn, "Connection is not null !");
+
+        DatabaseMetaData metaData = null;
+        List<Table> tables = new ArrayList<>();
+        try {
+            metaData = conn.getMetaData();
+            ResultSet rs = null;
+            for (String tableName : tableNames) {
+                rs = metaData.getTables(getDatabase(resource), null, tableName, new String[]{"TABLE"});
+                Table table = null;
+                while (rs.next()) {
+                    table = buildTable(rs, metaData);
+                    tables.add(table);
+                }
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        } finally {
+            factory.close(conn);
+        }
+        return tables;
+    }
+
     /**
      * 截取数据库名字
      *
@@ -103,6 +129,12 @@ public class DbAction {
                 .prefix(resource.getApplictionProperty(TABLE_PREFIX))
                 .columns(columns)
                 .lomback(resource.getApplictionProperty(LOMBACK))
+                .packageController(resource.getApplictionProperty("package.controller"))
+                .packageDao(resource.getApplictionProperty("package.dao"))
+                .packageMapper(resource.getApplictionProperty("package.mapper"))
+                .packageService(resource.getApplictionProperty("package.service"))
+                .packageModel(resource.getApplictionProperty("package.model"))
+
                 .build();
         log.info("load table - " + tableName);
         return table;
@@ -134,7 +166,7 @@ public class DbAction {
                     .map(Column::getColumnType)
                     .collect(toList());
         }
-        return getJavaType(keys.size() == 0  ? "" : keys.get(0));
+        return getJavaType(keys.size() == 0 ? "" : keys.get(0));
     }
 
     /**
@@ -171,4 +203,6 @@ public class DbAction {
         }
         return columns;
     }
+
+
 }

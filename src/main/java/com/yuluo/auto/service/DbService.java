@@ -28,8 +28,18 @@ public class DbService {
      * 流程处理
      */
     public void process() throws MySQLTimeoutException, IOException {
-        List<Table> tables = new DbAction(service).getAllTables();
-        new FileResource(service, tables).loadTemplate();
+        DbAction dbAction = new DbAction(service);
+        String tableMapperBase = service.getApplictionProperty("table.mapper.base");
+        List<Table> tables = null;
+        if (null != tableMapperBase) {
+            String[] tableNames = tableMapperBase.split(",");
+            tables = dbAction.getTables(tableNames);
+            new FileResource(service, tables).loadBaseMapperTemplate();
+        } else {
+            tables = dbAction.getAllTables();
+            new FileResource(service, tables).loadTemplate();
+        }
+
     }
 
 }

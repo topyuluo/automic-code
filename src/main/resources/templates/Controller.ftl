@@ -1,5 +1,4 @@
-package ${basePackage}.controller;
-
+package ${packageController}
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
-
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName};
-import ${basePackage}.service.${upperCaseName}Service;
+import ${packageModel}.${upperCaseName};
+import ${packageService}.${upperCaseName}Service;
 
 
 /**

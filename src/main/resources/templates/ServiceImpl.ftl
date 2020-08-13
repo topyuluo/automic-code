@@ -1,12 +1,16 @@
-package ${basePackage}.service.impl;
+package ${packageService}
+
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import ${basePackage}.service.${upperCaseName}Service;
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.dao.${upperCaseName}Dao;
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName};
+import ${packageService}.${upperCaseName}Service;
+
+import ${packageDao}.${upperCaseName}Dao;
+import ${packageModel}.${upperCaseName};
 /**
  * ${comment}服务类.
  */

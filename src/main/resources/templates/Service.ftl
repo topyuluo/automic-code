@@ -1,10 +1,10 @@
-package ${basePackage}.service;
+package ${packageService}
 
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import <#if daoPackage??>${daoPackage}<#else>${basePackage}</#if>.orm.model.${upperCaseName};
+import ${packageModel}.${upperCaseName};
 /**
  * ${comment}服务类.
  */

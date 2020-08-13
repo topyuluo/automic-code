@@ -56,6 +56,12 @@ public class Table {
     private List<Column> columns;
     private String lomback;
 
+    private String packageController;
+    private String packageService;
+    private String packageDao;
+    private String packageMapper;
+    private String packageModel;
+
 
     public Table(TableBuilder builder) {
         this.tableName = builder.tableName;
@@ -71,6 +77,30 @@ public class Table {
         this.daoPackage = builder.daoPackage;
         this.columns = builder.columns;
         this.lomback = builder.lomback;
+        this.packageController = builder.packageController;
+        this.packageService = builder.packageService;
+        this.packageDao = builder.packageDao ;
+        this.packageMapper = builder.packageMapper;
+        this.packageModel = builder.packageModel;
+        processPackagePath();
+    }
+
+    private void processPackagePath() {
+        if (packageController == null) {
+            this.packageController = basePackage + ".controller";
+        }
+        if (packageDao == null){
+            this.packageDao = basePackage + ".orm.dao";
+        }
+        if (packageMapper == null){
+            this.packageMapper = basePackage + ".orm.mapper";
+        }
+        if (packageModel == null){
+            this.packageModel = basePackage + ".orm.model";
+        }
+        if (packageService == null){
+            this.packageService = basePackage + ".service";
+        }
     }
 
     /**
@@ -180,6 +210,26 @@ public class Table {
         this.lomback = lomback;
     }
 
+    public String getPackageController() {
+        return packageController;
+    }
+
+    public String getPackageService() {
+        return packageService;
+    }
+
+    public String getPackageDao() {
+        return packageDao;
+    }
+
+    public String getPackageMapper() {
+        return packageMapper;
+    }
+
+    public String getPackageModel() {
+        return packageModel;
+    }
+
     public static class TableBuilder {
         //数据库中表名
         private String tableName;
@@ -201,6 +251,13 @@ public class Table {
         private List<Column> columns;
 
         private String lomback;
+
+        private String packageController;
+        private String packageService;
+        private String packageDao;
+        private String packageMapper;
+        private String packageModel;
+
 
         public TableBuilder tableName(String tableName) {
             this.tableName = tableName;
@@ -250,5 +307,28 @@ public class Table {
         public Table build() {
             return new Table(this);
         }
+
+        public TableBuilder packageController(String packageController) {
+            this.packageController = packageController;
+            return this;
+        }
+        public TableBuilder packageService(String packageService) {
+            this.packageService = packageService;
+            return this;
+        }
+        public TableBuilder packageDao(String packageDao) {
+            this.packageDao = packageDao;
+            return this;
+        }
+        public TableBuilder packageMapper(String packageMapper) {
+            this.packageMapper = packageMapper;
+            return this;
+        }
+        public TableBuilder packageModel(String packageModel) {
+            this.packageModel = packageModel;
+            return this;
+        }
+
+
     }
 }

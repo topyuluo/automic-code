@@ -69,7 +69,7 @@ public class FileResource {
         Template template = config.getTemplate(name);
         log.warn("load template - " + name.substring(0, name.indexOf(".")));
         name = getFilePath(table.getUpperCaseName(), name);
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name, true), "UTF-8"));) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));) {
             template.process(table, writer);
         }
         log.info("create file - " + name);
@@ -83,21 +83,36 @@ public class FileResource {
      * @return
      */
     private String getFilePath(String content, String fileName) {
-        StringBuilder sb = handlePath(resource.getApplictionProperty(PATH), fileName);
+
+        StringBuilder sb = handlePath(getPath(fileName), fileName);
         mkdirs(sb);
         String prefix = fileName.substring(0, fileName.indexOf("."));
         String mapper = "Mapper";
-        if (prefix.toLowerCase().contains(MAPPER)) {
+        if (prefix.toLowerCase().contains(MODEL)) {
             sb.append(content);
+        } else if (prefix.toLowerCase().startsWith("mybatis")) {
+            sb.append(fileName, 0, fileName.indexOf("."));
         } else {
             sb.append(content).append(fileName, 0, fileName.indexOf("."));
         }
-        if (fileName.contains(mapper)) {
+        if (fileName.startsWith(mapper)) {
             sb.append(".xml");
         } else {
             sb.append(".java");
         }
         return sb.toString();
+    }
+
+    private String getPath(String fileName) {
+        String pathName = "path." + (fileName.substring(0, fileName.indexOf(".")).toLowerCase());
+        String path = resource.getApplictionProperty(pathName);
+        if (null == path || "".equals(path)) {
+            path = resource.getApplictionProperty(PATH);
+            if (null == path || "".equals(path)) {
+                path = System.getProperty("user.dir");
+            }
+        }
+        return path;
     }
 
     /**
@@ -131,4 +146,22 @@ public class FileResource {
         }
     }
 
+    public void loadBaseMapperTemplate() throws IOException {
+        Configuration config = FreeMarkerConfig.getInstance();
+//        tables.forEach(t -> doProcess(t , config));
+        doProcessBaseMapper(config);
+    }
+
+    private void doProcessBaseMapper(Configuration config) {
+        tables.forEach(t -> {
+            for (File f : Objects.requireNonNull(FreeMarkerConfig.getResourceFile().listFiles())) {
+                try {
+                    if (f.getName().equals("MapperBase.ftl"))
+                        createFile(t, config, f.getName());
+                } catch (IOException | TemplateException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 }

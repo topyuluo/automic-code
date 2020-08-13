@@ -72,10 +72,13 @@ public abstract class ClassUtils {
     }
 
     private static void copyTemplates() throws IOException {
+        InputStream in = null;
+        BufferedReader reader = null;
+        BufferedWriter osw = null;
         for (String name : TEMPLATES_FILE) {
-            InputStream in = getClassLoaderAsStream(TEMPLATES + "/" + name);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            BufferedWriter osw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(TEMPLATE_DIR + name), StandardCharsets.UTF_8));
+            in = getClassLoaderAsStream(TEMPLATES + "/" + name);
+            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            osw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(TEMPLATE_DIR + name), StandardCharsets.UTF_8));
             String line = reader.readLine();
             while (line != null) {
                 osw.write(line);

@@ -26,11 +26,18 @@ public interface Constant {
     String LOMBACK = "lomback";
 
     String PATH = "path";
-    String MAPPER = "model";
+    String MODEL = "model";
 
     String UNDER_LINE = "_";
 
-    String[] TEMPLATES_FILE = {"Controller.ftl", "Dao.ftl", "Mapper.ftl", "MapperBase.ftl", "Model.ftl", "Service.ftl", "ServiceImpl.ftl"};
+    String[] TEMPLATES_FILE = {"Controller.ftl"
+                                , "Dao.ftl"
+                                , "Mapper.ftl"
+                                , "MapperBase.ftl"
+                                , "Model.ftl"
+                                , "Service.ftl"
+                                , "ServiceImpl.ftl"
+                                , "MybatisMapper.ftl"};
 
     HashMap<String, String> FILE_MAPPING = new HashMap<String, String>() {{
         put("Controller.ftl", "controller");
@@ -40,6 +47,7 @@ public interface Constant {
         put("Model.ftl", "orm\\model");
         put("Service.ftl", "service");
         put("ServiceImpl.ftl", "service\\impl");
+        put("MybatisMapper.ftl", "orm\\dao");
     }};
 
 
