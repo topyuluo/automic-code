@@ -1,25 +1,25 @@
-package ${packageService}
+package ${configInfo.packageService};
 
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import ${packageModel}.${upperCaseName};
+import ${configInfo.packageModel}.${table.upperCaseName};
 /**
- * ${comment}服务类.
+ * ${table.comment}服务类.
  */
 @Service
-public interface ${upperCaseName}Service {
+public interface ${table.upperCaseName}Service {
 
-    void insert(${upperCaseName} ${lowerCaseName});
+    void insert(${table.upperCaseName} ${table.lowerCaseName});
 
-    void update(${upperCaseName} ${lowerCaseName});
+    void update(${table.upperCaseName} ${table.lowerCaseName});
 
-    void delete(${idType} id);
+    void delete(${table.idType} id);
 
-    ${upperCaseName} find(${idType} id);
+    ${table.upperCaseName} find(${table.idType} id);
 
-    List<${upperCaseName}> findAll();
+    List<${table.upperCaseName}> findAll();
 
 
 }

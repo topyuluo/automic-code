@@ -1,11 +1,19 @@
 package com.yuluo.auto.service;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
+import com.yuluo.auto.model.Column;
+import com.yuluo.auto.model.ConfigInfo;
+import com.yuluo.auto.model.Table;
+import com.yuluo.auto.model.Templates;
 import com.yuluo.auto.source.BaseResource;
+import com.yuluo.auto.source.FileResource;
 import com.yuluo.auto.util.ClassUtils;
 import com.yuluo.auto.util.StringUtils;
+import freemarker.template.TemplateException;
 import org.apache.log4j.Logger;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,10 +37,13 @@ public class AutoService extends BaseResource {
     private static AutoService service = new AutoService();
     private String[] arrays = new String[]{"db.url", "db.username", "db.password", "base.package", "path"};
 
+    private Templates info = new Templates();
     private DbService dbService = null;
+    private ConfigService configService = null;
 
     private AutoService() {
-        this.dbService = new DbService(this);
+        this.configService = new ConfigService(this, info);
+        this.dbService = new DbService(this, info);
     }
 
     public static AutoService getInstance() {
@@ -42,8 +53,57 @@ public class AutoService extends BaseResource {
     public void doMain(String[] args) throws IOException, MySQLTimeoutException {
         //加载资源
         load(args);
-        dbService.process();
+        config();
+        doProcess();
+
+    }
+
+    private void doProcess() {
+        if (info.getInfo().getEnableExcle()){
+            exportExcle();
+            return;
+        }
+        createFile();
         ClassUtils.delete();
+
+    }
+
+
+
+    private void exportExcle() {
+
+        String s = "d:\\autocode\\123.xlsx";
+        ExcelWriter write = EasyExcel.write(s, Column.class).build();
+        try {
+            List<Table> tables = info.getTable();
+            tables.forEach( t -> {
+                WriteSheet sheet = EasyExcel.writerSheet(t.getTableName() + "-" + t.getComment()).build();
+                write.write(t.getColumns(), sheet);
+            });
+        }finally {
+            if (write != null){
+                write.finish();
+            }
+        }
+
+
+    }
+
+
+
+
+
+    private void createFile() {
+        try {
+            new FileResource(info).loadTemplate();
+        } catch (IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void config() throws IOException, MySQLTimeoutException {
+        ConfigInfo config = configService.process();
+        dbService.process(config.getTableNames());
     }
 
     /**

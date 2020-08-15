@@ -32,59 +32,57 @@ public class DbAction {
     private DbFactory factory = null;
     private BaseResource resource;
 
+    private DatabaseMetaData metaData = null;
+    Connection conn = null;
+
     public DbAction(BaseResource resource) {
         this.factory = new DbFactory();
         this.resource = resource;
+        this.metaData = getMetaData();
+    }
+
+    private DatabaseMetaData getMetaData() {
+        try {
+            conn = factory.getConnection(resource.getResource(0));
+            return conn.getMetaData();
+        } catch (SQLException e) {
+            log.error(e);
+            throw new IllegalArgumentException("获取数据库连接异常");
+        }
     }
 
     /**
      * 获取数据库中的所有表
      */
     public List<Table> getAllTables() throws MySQLTimeoutException {
+        return buildTables(null);
+    }
 
-        Connection conn = factory.getConnection(resource.getResource(0));
-        Assert.notNull(conn, "Connection is not null !");
-
-        DatabaseMetaData metaData = null;
+    /**
+     * 获取指定的表
+     *
+     * @param tableNames
+     * @return
+     */
+    public List<Table> getTables(List<String> tableNames) {
         List<Table> tables = new ArrayList<>();
-        try {
-            metaData = conn.getMetaData();
-            ResultSet rs = metaData.getTables(getDatabase(resource), null, null, new String[]{"TABLE"});
+        tableNames.forEach(table -> {
+            tables.addAll(buildTables(table));
+        });
+        return tables;
+    }
+
+    private List<Table> buildTables(String tableName) {
+        List<Table> tables = new ArrayList<>();
+        try (ResultSet rs = metaData.getTables(getDatabase(resource), null, tableName, new String[]{"TABLE"});) {
             Table table = null;
             while (rs.next()) {
                 table = buildTable(rs, metaData);
                 tables.add(table);
             }
         } catch (SQLException e) {
-            log.error(e.getMessage());
-        } finally {
-            factory.close(conn);
-        }
-        return tables;
-    }
-
-    public List<Table> getTables(String[] tableNames) throws MySQLTimeoutException {
-
-        Connection conn = factory.getConnection(resource.getResource(0));
-        Assert.notNull(conn, "Connection is not null !");
-
-        DatabaseMetaData metaData = null;
-        List<Table> tables = new ArrayList<>();
-        try {
-            metaData = conn.getMetaData();
-            ResultSet rs = null;
-            for (String tableName : tableNames) {
-                rs = metaData.getTables(getDatabase(resource), null, tableName, new String[]{"TABLE"});
-                Table table = null;
-                while (rs.next()) {
-                    table = buildTable(rs, metaData);
-                    tables.add(table);
-                }
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        } finally {
-            factory.close(conn);
+            log.error(e);
+            throw new IllegalArgumentException("没有获取数据库的信息");
         }
         return tables;
     }
@@ -124,17 +122,8 @@ public class DbAction {
                 .comment(comment)
                 .idType(getIdType(columns, tableName, metaData))
                 .autoIncrement(getInCrement(columns))
-                .basePackage(resource.getApplictionProperty(BASE_PACKAGE))
-                .daoPackage(resource.getApplictionProperty(DAO_PACKAGE))
                 .prefix(resource.getApplictionProperty(TABLE_PREFIX))
                 .columns(columns)
-                .lomback(resource.getApplictionProperty(LOMBACK))
-                .packageController(resource.getApplictionProperty("package.controller"))
-                .packageDao(resource.getApplictionProperty("package.dao"))
-                .packageMapper(resource.getApplictionProperty("package.mapper"))
-                .packageService(resource.getApplictionProperty("package.service"))
-                .packageModel(resource.getApplictionProperty("package.model"))
-
                 .build();
         log.info("load table - " + tableName);
         return table;
@@ -161,6 +150,11 @@ public class DbAction {
         List<String> keys = null;
         while (rskey.next()) {
             String id = rskey.getString(COLUMN_NAME);
+            for (Column column : columns) {
+                if (column.getColumnName().equals(id)) {
+                    column.setKey("是");
+                }
+            }
             keys = columns.stream()
                     .filter(c -> c.getColumnName().equals(id))
                     .map(Column::getColumnType)
@@ -205,4 +199,15 @@ public class DbAction {
     }
 
 
+    public void close() {
+        if (conn != null) {
+            try {
+                conn.close();
+                log.warn("关闭数据库连接！");
+            } catch (SQLException e) {
+                log.error("关闭数据库连接异常 :" + e.getMessage());
+            }
+        }
+
+    }
 }

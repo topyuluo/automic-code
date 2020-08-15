@@ -1,4 +1,4 @@
-package ${packageDao};
+package ${configInfo.packageDao};
 
 
 public interface MybatisMapper<T> {

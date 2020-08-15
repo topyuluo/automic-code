@@ -22,7 +22,7 @@ public interface Constant {
     String BASE_PACKAGE = "base.package";
     String DAO_PACKAGE = "dao.package";
 
-    String TABLE_PREFIX = "table.prefix";
+    String TABLE_PREFIX = "table.cut";
     String LOMBACK = "lomback";
 
     String PATH = "path";

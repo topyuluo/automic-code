@@ -44,9 +44,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId> lombok</artifactId>
-            <version>1.16.10</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.2.6</version>
         </dependency>
 
         <dependency>

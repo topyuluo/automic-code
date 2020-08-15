@@ -1,19 +1,19 @@
-package ${packageDao};
+package ${configInfo.packageDao};
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import ${packageDao}.${upperCaseName};
+import ${configInfo.packageModel}.${table.upperCaseName};
 
 /**
- * ${comment}数据访问类.
+ * ${table.comment}数据访问类.
  */
 @Repository
 @Mapper
-public interface ${upperCaseName}Dao extends MabatisMapper<${upperCaseName}>{
+public interface ${table.upperCaseName}Dao extends MybatisMapper<${table.upperCaseName}>{
 
-    List<${upperCaseName}> findAll();
+    List<${table.upperCaseName}> findAll();
 
 }
 

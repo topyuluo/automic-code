@@ -2,8 +2,8 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="${packageDao}.${upperCaseName}Dao">
-    <select id="findAll" resultMap="${lowerCaseName}Map">
-        select * from ${tableName}
+<mapper namespace="${configInfo.packageDao}.${table.upperCaseName}Dao">
+    <select id="findAll" resultMap="${table.lowerCaseName}Map">
+        select * from ${table.tableName}
     </select>
 </mapper>

@@ -1,4 +1,4 @@
-package ${packageService}
+package ${configInfo.packageServiceImpl};
 
 
 
@@ -7,38 +7,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import ${packageService}.${upperCaseName}Service;
+import ${configInfo.packageService}.${table.upperCaseName}Service;
 
-import ${packageDao}.${upperCaseName}Dao;
-import ${packageModel}.${upperCaseName};
+import ${configInfo.packageDao}.${table.upperCaseName}Dao;
+import ${configInfo.packageModel}.${table.upperCaseName};
 /**
- * ${comment}服务类.
+ * ${table.comment}服务类.
  */
 @Service
-public class ${upperCaseName}ServiceImpl implements ${upperCaseName}Service {
+public class ${table.upperCaseName}ServiceImpl implements ${table.upperCaseName}Service {
 
     @Autowired
-    private ${upperCaseName}Dao ${lowerCaseName}Dao;
+    private ${table.upperCaseName}Dao ${table.lowerCaseName}Dao;
 
     @Override
-    public void insert(${upperCaseName} ${lowerCaseName}) {
-        ${lowerCaseName}Dao.insert(${lowerCaseName});
+    public void insert(${table.upperCaseName} ${table.lowerCaseName}) {
+        ${table.lowerCaseName}Dao.insert(${table.lowerCaseName});
     }
     @Override
-    public void update(${upperCaseName} ${lowerCaseName}) {
-        ${lowerCaseName}Dao.update(${lowerCaseName});
+    public void update(${table.upperCaseName} ${table.lowerCaseName}) {
+        ${table.lowerCaseName}Dao.update(${table.lowerCaseName});
     }
     @Override
-    public void delete(${idType} id) {
-        ${lowerCaseName}Dao.delete(id);
+    public void delete(${table.idType} id) {
+        ${table.lowerCaseName}Dao.delete(id);
     }
     @Override
-    public ${upperCaseName} find(${idType} id) {
-        return ${lowerCaseName}Dao.find(id);
+    public ${table.upperCaseName} find(${table.idType} id) {
+        return ${table.lowerCaseName}Dao.find(id);
     }
     @Override
-    public List<${upperCaseName}> findAll() {
-        return ${lowerCaseName}Dao.findAll();
+    public List<${table.upperCaseName}> findAll() {
+        return ${table.lowerCaseName}Dao.findAll();
     }
 
 

@@ -1,18 +1,18 @@
-package ${packageModel}
+package ${configInfo.packageModel};
 
-<#if lomback??>
+<#if configInfo.enableLomback == true>
 import lombok.Data;
 </#if>
 /**
- * ${comment}实体类.
+ * ${table.comment}实体类.
  */
-<#if lomback??>
+<#if configInfo.enableLomback == true>
 @Data
 </#if>
-public class ${upperCaseName} {
+public class ${table.upperCaseName} {
     private static final long serialVersionUID = 1L;
 
-    <#list columns as property>
+    <#list table.columns as property>
     /**
     * ${property.comment}
     */
@@ -21,9 +21,9 @@ public class ${upperCaseName} {
 
         </#if>
     </#list>
-    <#if lomback??>
+    <#if configInfo.enableLomback == true>
     <#else>
-    <#list columns as property>
+    <#list table.columns as property>
     /**
     * ${property.comment}的设置方法.
     */
