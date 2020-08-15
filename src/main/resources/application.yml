@@ -1,0 +1,41 @@
+#数据库配置
+db:
+  url: jdbc:mysql://192.168.0.100:3306/sf
+  username: root
+  password: 123456
+
+#报名配置
+package:
+  base: com.example.auto
+  controller: com.example.auto.ert.controller
+  service: com.example.auto.ert1.service
+    impl: com.example.auto.ert2.impl
+  dao: com.example.auto.ert3.dao
+  model: com.example.auto.ert5.model
+
+#路径配置
+path:
+  base: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto
+  controller: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto\\ert\\controller
+  servie: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto\\ert1\\service
+    impl: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto\\ert2\\impl
+    dao: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto\\ert3\\dao
+  mapper: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto\\ert4\\mapper
+  model: d:\\auto-code-demo\\src\\main\\java\\com\\example\\auto\\ert5\\model
+
+#开启lomback
+lomback:
+  enable: true
+
+#表前缀截取 和 导出表结构到excle,制定导出路径
+table:
+  cut: true
+  excle:
+    export: true
+    pah:
+
+
+
+
+
+

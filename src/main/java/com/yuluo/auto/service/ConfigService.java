@@ -27,7 +27,7 @@ public class ConfigService {
         configInfo.resolveLomback(service.getApplictionProperty("lomback.enable"));
         configInfo.resolvePath(service);
         configInfo.resolvePackage(service);
-        configInfo.resolveExcle(service.getApplictionProperty("table.export.excle"));
+        configInfo.resolveExcle(service);
         return configInfo;
     }
 }

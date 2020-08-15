@@ -35,6 +35,7 @@ public class ConfigInfo {
 
     private List<String> tableNames;
     private boolean enableExcle;
+    private String exclePath;
 
 
     public void resolveLomback(String value) {
@@ -78,8 +79,10 @@ public class ConfigInfo {
         }
         throw new IllegalArgumentException("获取不到对应的参数！");
     }
-    public void resolveExcle(String value) {
-        this.enableExcle = value != null;
+
+    public void resolveExcle(BaseResource resource) {
+        this.enableExcle = resource.getApplictionProperty("table.excle.export") != null;
+        this.exclePath = resource.getApplictionProperty("table.excle.path") ;
     }
 
     private String getPackageModel(BaseResource service) {
@@ -256,7 +259,11 @@ public class ConfigInfo {
         return tableNames;
     }
 
-   public boolean getEnableExcle(){
-       return enableExcle;
-   }
+    public boolean getEnableExcle() {
+        return enableExcle;
+    }
+
+    public String getExclePath() {
+        return exclePath;
+    }
 }

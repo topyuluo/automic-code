@@ -40,10 +40,12 @@ public class AutoService extends BaseResource {
     private Templates info = new Templates();
     private DbService dbService = null;
     private ConfigService configService = null;
+    private ExcelService excelService = null;
 
     private AutoService() {
         this.configService = new ConfigService(this, info);
         this.dbService = new DbService(this, info);
+        this.excelService = new ExcelService(info);
     }
 
     public static AutoService getInstance() {
@@ -53,7 +55,9 @@ public class AutoService extends BaseResource {
     public void doMain(String[] args) throws IOException, MySQLTimeoutException {
         //加载资源
         load(args);
+        //解析配置信息
         config();
+        //创建文件
         doProcess();
 
     }
@@ -65,33 +69,11 @@ public class AutoService extends BaseResource {
         }
         createFile();
         ClassUtils.delete();
-
     }
-
-
 
     private void exportExcle() {
-
-        String s = "d:\\autocode\\123.xlsx";
-        ExcelWriter write = EasyExcel.write(s, Column.class).build();
-        try {
-            List<Table> tables = info.getTable();
-            tables.forEach( t -> {
-                WriteSheet sheet = EasyExcel.writerSheet(t.getTableName() + "-" + t.getComment()).build();
-                write.write(t.getColumns(), sheet);
-            });
-        }finally {
-            if (write != null){
-                write.finish();
-            }
-        }
-
-
+        excelService.process();
     }
-
-
-
-
 
     private void createFile() {
         try {
