@@ -42,9 +42,7 @@ public class FileResource {
     /**
      * 加载模板信息
      */
-    public void loadTemplate() throws IOException, TemplateException {
-//        Configuration config = ;
-//        tables.forEach(t -> doProcess(t , config));
+    public void loadTemplate() throws IOException {
         doProcess(FreeMarkerConfig.getInstance());
     }
 
@@ -53,17 +51,7 @@ public class FileResource {
      *
      * @param config
      */
-    private void doProcess(Configuration config) throws IOException, TemplateException {
-//        tables.forEach(t -> {
-//            for (File f : Objects.requireNonNull(FreeMarkerConfig.getResourceFile().listFiles())) {
-//                try {
-//                    createFile(t, config, f.getName());
-//                } catch (IOException | TemplateException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
+    private void doProcess(Configuration config) {
         String[] list = FreeMarkerConfig.getResourceFile().list();
         if (list == null) {
             throw new IllegalArgumentException("获取文件模板异常 ！");
@@ -71,8 +59,8 @@ public class FileResource {
         List<String> collect = Arrays.asList(list);
         if (templates.getInfo().getTableNames() != null) {
             collect = collect.stream()
-                        .filter(s -> s.contains("Base") || s.contains("Model"))
-                        .collect(toList());
+                    .filter(s -> s.contains("Base") || s.contains("Model"))
+                    .collect(toList());
         }
 
         doCreateFile(config, collect);
@@ -88,7 +76,7 @@ public class FileResource {
         });
     }
 
-    private String getName(String fileName){
+    private String getName(String fileName) {
         return fileName.substring(0, fileName.indexOf("."));
     }
 
@@ -145,48 +133,17 @@ public class FileResource {
     }
 
     private String getPath(String name, ConfigInfo configInfo) {
-
-
-
         Class<? extends ConfigInfo> clazz = configInfo.getClass();
         try {
-//            PropertyDescriptor descriptor = new PropertyDescriptor("pathController", clazz);
-//            return (String) descriptor.getReadMethod().invoke(configInfo);
             Method method = clazz.getDeclaredMethod("getPath" + name);
             return (String) method.invoke(configInfo);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             log.warn(e.getMessage() + "no such method exception");
         }
         return configInfo.getAlias(name);
-//        String pathName = "path." + (fileName.substring(0, fileName.indexOf(".")).toLowerCase());
-//        String path = resource.getApplictionProperty(pathName);
-//        if (null == path || "".equals(path)) {
-//            path = resource.getApplictionProperty(PATH);
-//            if (null == path || "".equals(path)) {
-//                path = System.getProperty("user.dir");
-//            }
-//        }
-//        return path;
+
     }
 
-//    /**
-//     * 处理文件路径
-//     *
-//     * @param basePath
-//     * @return
-//     */
-//    private StringBuilder handlePath(String basePath, String fileName) {
-//        StringBuilder sb = new StringBuilder(basePath);
-//        String backslash = "/";
-//        if (basePath.contains(backslash)) {
-//            basePath = basePath.replaceAll(backslash, File.separator);
-//        }
-//        if (!basePath.endsWith(File.separator)) {
-//            sb.append(File.separator);
-//        }
-//        sb.append(FILE_MAPPING.get(fileName)).append(File.separator);
-//        return sb;
-//    }
 
     /**
      * 文件夹不存在则创建
@@ -201,22 +158,5 @@ public class FileResource {
         }
     }
 
-//    public void loadBaseMapperTemplate() throws IOException {
-//        Configuration config = FreeMarkerConfig.getInstance();
-////        tables.forEach(t -> doProcess(t , config));
-//        doProcessBaseMapper(config);
-//    }
 
-//    private void doProcessBaseMapper(Configuration config) {
-//        tables.forEach(t -> {
-//            for (File f : Objects.requireNonNull(FreeMarkerConfig.getResourceFile().listFiles())) {
-//                try {
-//                    if (f.getName().equals("MapperBase.ftl"))
-//                        createFile(t, config, f.getName());
-//                } catch (IOException | TemplateException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 }

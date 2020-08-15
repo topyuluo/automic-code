@@ -29,6 +29,7 @@ public interface Constant {
     String MODEL = "model";
 
     String UNDER_LINE = "_";
+    String COMMA = ",";
 
     String[] TEMPLATES_FILE = {"Controller.ftl"
                                 , "Dao.ftl"

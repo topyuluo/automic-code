@@ -78,7 +78,7 @@ public class AutoService extends BaseResource {
     private void createFile() {
         try {
             new FileResource(info).loadTemplate();
-        } catch (IOException | TemplateException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

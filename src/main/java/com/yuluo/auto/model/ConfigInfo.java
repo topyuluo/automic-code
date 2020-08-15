@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.yuluo.auto.constants.Constant.COMMA;
+
 /**
  * @Description 配置信息类
  * @Author 蚂蚁不是ant
@@ -47,7 +49,7 @@ public class ConfigInfo {
         if (value == null) {
             return;
         }
-        String[] values = value.split(",");
+        String[] values = value.split(COMMA);
         tableNames = new ArrayList<>(Arrays.asList(values));
     }
 
@@ -95,7 +97,7 @@ public class ConfigInfo {
     }
 
     private String getPackageService(BaseResource service) {
-        String value = service.getApplictionProperty("package.service");
+        String value = service.getApplictionProperty("package.service.base");
         if (value == null) {
             value = service.getApplictionProperty("package.base");
             return value == null ? "service" : value + ".service";
@@ -175,7 +177,7 @@ public class ConfigInfo {
     }
 
     private String getPathService(BaseResource service) {
-        String value = service.getApplictionProperty("path.service");
+        String value = service.getApplictionProperty("path.service.base");
         if (value == null) {
             value = service.getApplictionProperty("path.base");
             if (value == null) {
