@@ -1,7 +1,5 @@
 package com.yuluo.auto.constants;
 
-import java.util.HashMap;
-
 /**
  * @Description
  * @Author 蚂蚁不是ant
@@ -40,16 +38,7 @@ public interface Constant {
                                 , "ServiceImpl.ftl"
                                 , "MybatisMapper.ftl"};
 
-    HashMap<String, String> FILE_MAPPING = new HashMap<String, String>() {{
-        put("Controller.ftl", "controller");
-        put("Dao.ftl", "orm\\dao");
-        put("Mapper.ftl", "orm\\mapper");
-        put("MapperBase.ftl", "orm\\mapper");
-        put("Model.ftl", "orm\\model");
-        put("Service.ftl", "service");
-        put("ServiceImpl.ftl", "service\\impl");
-        put("MybatisMapper.ftl", "orm\\dao");
-    }};
+
 
 
 

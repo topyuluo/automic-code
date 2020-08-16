@@ -1,18 +1,13 @@
 package com.yuluo.auto.service;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
 import com.mysql.cj.jdbc.exceptions.MySQLTimeoutException;
-import com.yuluo.auto.model.Column;
 import com.yuluo.auto.model.ConfigInfo;
-import com.yuluo.auto.model.Table;
 import com.yuluo.auto.model.Templates;
 import com.yuluo.auto.source.BaseResource;
 import com.yuluo.auto.source.FileResource;
+import com.yuluo.auto.util.Assert;
 import com.yuluo.auto.util.ClassUtils;
 import com.yuluo.auto.util.StringUtils;
-import freemarker.template.TemplateException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -20,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -59,11 +53,10 @@ public class AutoService extends BaseResource {
         config();
         //创建文件
         doProcess();
-
     }
 
     private void doProcess() {
-        if (info.getInfo().getEnableExcle()){
+        if (info.getInfo().getEnableExcle()) {
             exportExcle();
             return;
         }
@@ -96,17 +89,15 @@ public class AutoService extends BaseResource {
     private void load(String[] args) {
         String userDir = null;
         Object obj = null;
-        int length = 5;
         if (StringUtils.isNotEmpty(args)) {
-            if (args.length != length) {
-                throw new IllegalArgumentException("命令行需要输入5个参数！");
-            }
+            Assert.lengthValid(args);
             Map<String, String> map = new HashMap<>(16);
             for (int i = 0; i < arrays.length; i++) {
                 map.put(arrays[i], args[i]);
             }
             obj = map;
-        } else if (!"".equals(userDir = judgeConfig())) {
+        }
+        if (!"".equals(userDir = judgeConfig())) {
             obj = userDir;
         }
         loadResource(obj);

@@ -4,9 +4,9 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-
-import static com.yuluo.auto.constants.Constant.TEMPLATES_FILE;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * @Description 获取类加载器
@@ -65,17 +65,19 @@ public abstract class ClassUtils {
             String base = System.getProperty("user.dir");
             TEMPLATE_DIR = base + File.separator + TEMPLATES + File.separator;
             mkdir();
-            copyTemplates();
+            copyTemplates(base);
             template = TEMPLATE_DIR;
         }
         return template;
     }
 
-    private static void copyTemplates() throws IOException {
+    private static void copyTemplates(String base) throws IOException {
         InputStream in = null;
         BufferedReader reader = null;
         BufferedWriter osw = null;
-        for (String name : TEMPLATES_FILE) {
+
+        List<String> files = getTemplates(base);
+        for (String name : files) {
             in = getClassLoaderAsStream(TEMPLATES + "/" + name);
             reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             osw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(TEMPLATE_DIR + name), StandardCharsets.UTF_8));
@@ -89,6 +91,25 @@ public abstract class ClassUtils {
             osw.close();
             reader.close();
         }
+    }
+
+    private static List<String> getTemplates(String base) throws IOException {
+        File file = new File(base);
+        String jar = Arrays.stream(Objects.requireNonNull(file.list()))
+                .filter(t -> t.contains("jar"))
+                .findFirst()
+                .get();
+        JarFile jarFile = new JarFile(base + File.separator + jar);
+        Enumeration<JarEntry> entries = jarFile.entries();
+        List<String> files = new ArrayList<>();
+        while (entries.hasMoreElements()){
+            JarEntry jarEntry = entries.nextElement();
+            String name = jarEntry.getName();
+            if (name.contains(TEMPLATES) && name.endsWith("ftl")) {
+                files.add(name.substring(name.indexOf("/")+1));
+            }
+        }
+        return files;
     }
 
 

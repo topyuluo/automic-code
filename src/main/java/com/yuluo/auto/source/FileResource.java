@@ -10,17 +10,13 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.log4j.Logger;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static com.yuluo.auto.constants.Constant.*;
+import static com.yuluo.auto.constants.Constant.MODEL;
 import static java.util.stream.Collectors.toList;
 
 /**

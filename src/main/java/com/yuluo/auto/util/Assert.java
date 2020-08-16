@@ -20,4 +20,10 @@ public abstract class Assert {
             throw new IllegalArgumentException(msg);
         }
     }
+
+    public static void lengthValid(String[]  args){
+        if (args.length != 5) {
+            throw new IllegalArgumentException("命令行需要输入5个参数！");
+        }
+    }
 }

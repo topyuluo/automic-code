@@ -113,15 +113,6 @@ public class ConfigInfo {
         return value;
     }
 
-    private String getPackageMapper(BaseResource service) {
-        String value = service.getApplictionProperty("package.mapper");
-        if (value == null) {
-            value = service.getApplictionProperty("package.base");
-            return value == null ? "orm.mapper" : value + ".orm.mapper";
-        }
-        return value;
-    }
-
     private String getPackageDao(BaseResource service) {
         String value = service.getApplictionProperty("package.dao");
         if (value == null) {
